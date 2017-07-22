@@ -1,9 +1,18 @@
 version: "2"
 services:
-    wordpress:
-        image: wordpress:latest
+    web:
+        image: wordpress:php5.6
         ports:
             - "8888:80"
+        depends_on:
+            - db
+        environment:
+            WORDPRESS_DB_HOST: "db:3306"
+        env_file: .env
+        volumes:
+          - ./src:/usr/src/wordpress/wp-content/plugins/wp-cpt-json
+    wp:
+        image: wordpress:cli-php5.6
         depends_on:
             - db
         environment:

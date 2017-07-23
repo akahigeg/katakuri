@@ -1,0 +1,14 @@
+<phpunit
+	bootstrap="wordpress/wp-content/plugins/wp-cpt-json/tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	>
+	<testsuites>
+		<testsuite>
+			<directory prefix="test-" suffix=".php">wordpress/wp-content/plugins/wp-cpt-json/tests/</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

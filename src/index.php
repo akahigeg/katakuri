@@ -13,15 +13,20 @@ Domain Path: /languages
 if (!array_key_exists('wp-cpt-json', $GLOBALS)) {
   class WpCptJson{
   	static public function init() {
-	  $post_type_name = 'same_type';
-	  $options = array(
-      'labels' => array(
-        'name' => __('SameType')
-      ),
-      'public' => true,
-      'has_archive' => true,
-    );
-	  register_post_type($post_type_name, $options);
+
+  		$yaml = <<<YAML
+some_post:
+  labels:
+    name: Some Post
+  public: true
+  has_archive: true
+YAML;
+
+      $post_types = yaml_parse($yaml);
+
+      foreach($post_types as $post_type_name => $options) {
+    	  register_post_type($post_type_name, $options);
+      }
 
   	}
   }

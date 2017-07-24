@@ -1,7 +1,9 @@
 version: "2"
 services:
-    web:
-        image: wordpress:php5.6
+    wordpress:
+        build:
+            context: .
+            dockerfile: Dockerfile
         ports:
             - "8888:80"
         depends_on:
@@ -10,22 +12,13 @@ services:
             WORDPRESS_DB_HOST: "db:3306"
         env_file: .env
         volumes:
-          - ./src:/usr/src/wordpress/wp-content/plugins/wp-cpt-json
-    wp:
-        image: wordpress:cli-php5.6
-        depends_on:
-            - db
-        environment:
-            WORDPRESS_DB_HOST: "db:3306"
-        env_file: .env
-        volumes:
-          - ./src:/usr/src/wordpress/wp-content/plugins/wp-cpt-json
+          - ./src:/var/www/html/wp-content/plugins/wp-cpt-json
     db:
         image: mysql:latest
         env_file: .env
         volumes:
             - db-data:/var/lib/mysql
- 
+
 volumes:
     db-data:
         driver: local

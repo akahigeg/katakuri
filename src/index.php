@@ -13,16 +13,7 @@ Domain Path: /languages
 if (!array_key_exists('wp-cpt-json', $GLOBALS)) {
   class WpCptJson{
   	static public function init() {
-
-  		$yaml = <<<YAML
-some_post:
-  labels:
-    name: Some Post
-  public: true
-  has_archive: true
-YAML;
-
-      $post_types = yaml_parse($yaml);
+      $post_types = yaml_parse_file(plugin_dir_path(__FILE__) . '/post_types.yml');
 
       foreach($post_types as $post_type_name => $options) {
     	  register_post_type($post_type_name, $options);

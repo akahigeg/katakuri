@@ -1,0 +1,10 @@
+some_post:
+  labels:
+    name: Some Post
+  public: true
+  has_archive: true
+another_post:
+  labels:
+    name: Another Post
+  public: true
+  has_archive: true

@@ -3,6 +3,22 @@ some_post:
     name: Some Post
   public: true
   has_archive: true
+  taxonomies:
+    - some_post_tag:
+        hierarchical: false
+        public: true
+        show_ui: true
+        label: タグ
+    - some_post_cat:
+        hierarchical: true
+        public: true
+        show_ui: true
+        label: カテ
+    - some_post_cat_second:
+        hierarchical: true
+        public: true
+        show_ui: true
+        label: カテ２
 another_post:
   labels:
     name: Another Post

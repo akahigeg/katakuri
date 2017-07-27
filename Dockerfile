@@ -1,6 +1,6 @@
 FROM wordpress:php5.6
 
-RUN apt-get update && apt-get install -y less wget
+RUN apt-get update && apt-get install -y less wget subversion mysql-client
 RUN apt-get install -y php-pear libyaml-dev && pecl install yaml
 RUN echo "extension=yaml.so" > /usr/local/etc/php/conf.d/docker-php-ext-yaml.ini
 

@@ -47,6 +47,8 @@ before_script:
       composer global require wp-coding-standards/wpcs
       phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
     fi
+  - pecl install yaml
+  - echo "extension=yaml.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - |

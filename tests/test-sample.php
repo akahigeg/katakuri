@@ -2,7 +2,7 @@
 /**
  * Class SampleTest
  *
- * @package Wp_Cpt_Json
+ * @package Post_Type_Note
  */
 
 /**

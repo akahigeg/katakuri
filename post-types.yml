@@ -24,3 +24,4 @@ another_post:
     name: Another Post
   public: true
   has_archive: true
+  hierarchical: true

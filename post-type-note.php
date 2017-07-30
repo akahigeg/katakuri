@@ -43,3 +43,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
 }
+
+/*
+TODO: show args in admin console
+TODO: manage custom field. build forms and save input values
+TODO: comment
+*/

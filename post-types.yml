@@ -19,6 +19,19 @@ some_post:
         public: true
         show_ui: true
         label: CategoryB
+  custom_fields:
+    - field1:
+      unique: true
+      type: text
+      input: text
+      list_column: true
+    - field2:
+      unique: false
+      type: text
+      input: checkbox
+      values:
+        - 1
+        - 2
 another_post:
   labels:
     name: Another Post

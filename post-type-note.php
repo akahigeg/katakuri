@@ -48,4 +48,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 TODO: show args in admin console
 TODO: manage custom field. build forms and save input values
 TODO: comment
+TODO: add_action('save_post', save_meta_func)
+TODO: add_filter('manage_<post_type>_posts_columns', )
+TODO: add_action('manage_<post_type>_posts_custom_columns', )
+TODO: add_filter('manage_edit-<post_type>_sortable_columns', )
+TODO: add_filter('request', <order>)
 */

@@ -19,6 +19,8 @@ class RegisterPostTypeTest extends WP_UnitTestCase {
 	function test_some_post_is_not_hierarchical() {
 		$this->assertFalse(is_post_type_hierarchical('some_post'));
 	}
+	// check post type supports
+
 	// register taxonomy test
 	function test_register_some_post_tag_args() {
 		$t = get_taxonomies(array('name' => 'some_post_tag'), 'objects')['some_post_tag'];

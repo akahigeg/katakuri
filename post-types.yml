@@ -21,18 +21,18 @@ some_post:
         label: CategoryB
   custom_fields:
     - field1:
-      unique: true
-      type: text
-      input: text
-      list_column: true
+        unique: true
+        type: text
+        input: text
+        list_column: true
     - field2:
-      unique: false
-      type: text
-      input: checkbox
-      default: 1
-      values:
-        - 1
-        - 2
+        unique: false
+        type: text
+        input: checkbox
+        default: 1
+        values:
+          - 1
+          - 2
 another_post:
   labels:
     name: Another Post

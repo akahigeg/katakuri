@@ -66,11 +66,28 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       $post_types = self::readConfig();
       foreach($post_types as $post_type_name => $options) {
         # support one meta box each post type now.
-        $custom_fields = $options['custom_fields'];
-        add_meta_box($post_type_name. '_meta_box', 
-                     'Custom Fields', 
-                     'PostTypeNote::render' . String::pascalize($post_type_name) . 'MetaBox', 
-                     $post_type_name, 'normal', 'core');
+        if (array_key_exists('custom_fields', $options)) {
+          $custom_fields = $options['custom_fields'];
+          add_meta_box($post_type_name. '_meta_box', 
+                       'Custom Fields', 
+                       'PostTypeNote::renderMetaBox', 
+                       $post_type_name, 'normal', 'core');
+        }
+      }
+    }
+
+    public static function renderMetaBox() {
+      global $post;
+      $post_type_name = get_post_type($post);
+
+      $post_types = self::readConfig();
+      if (array_key_exists($post_type_name, $post_types)) {
+        $custom_fields = $post_types[$post_type_name]['custom_fields'];
+        foreach ($custom_fields as $custom_field) {
+          foreach ($custom_field as $name => $options) {
+            echo $name;
+          }
+        } 
       }
     }
 

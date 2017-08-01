@@ -44,8 +44,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
       # add meta box in admin console for custom fields
       if (array_key_exists('custom_fields', $options)) {
-        self::addCustomFieldsMetaBoxes($options['custom_fields']);
-
         # $options['custom_fields'] doesn't need from register post_type function
         unset($options['custom_fields']); 
       }
@@ -64,22 +62,39 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
-    public static function addCustomFieldsMetaBoxes($custom_fields) {
-      # add_action('add_meta_boxes');
-
-    }
-
     public static function addMetaBoxes() {
-      add_meta_box('youtube_id', 'OH! YOUTUBE!', 'PostTypeNote::renderYoutubeIdMetaBox', 'some_post', 'normal', 'core');
+      $post_types = self::readConfig();
+      foreach($post_types as $post_type_name => $options) {
+        # support one meta box each post type now.
+        $custom_fields = $options['custom_fields'];
+        add_meta_box($post_type_name. '_meta_box', 
+                     'Custom Fields', 
+                     'PostTypeNote::render' . String::pascalize($post_type_name) . 'MetaBox', 
+                     $post_type_name, 'normal', 'core');
+      }
     }
 
-    public static function renderYoutubeIdMetaBox() {
+    public static function renderSomePostMetaBox() {
       echo "OK";
     }
   }
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
   add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
+}
+
+class String {
+  public static function underscore($str) {
+    return ltrim(strtolower(preg_replace('/[A-Z]/', '_\0', $str)), '_');
+  }
+
+  public static function camelize($str) {
+    return lcfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+  }
+
+  public static function pascalize($str) {
+    return ucfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+  }
 }
 
 /*

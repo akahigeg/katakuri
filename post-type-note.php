@@ -13,12 +13,16 @@ Domain Path: /languages
 if (!array_key_exists('post-type-note', $GLOBALS)) {
   class PostTypeNote{
   	public static function init() {
-      $post_types = yaml_parse_file(plugin_dir_path(__FILE__) . '/post-types.yml');
+      $post_types = self::readConfig();
 
       # register each post types
       foreach($post_types as $post_type_name => $options) {
         self::registerPostType($post_type_name, $options);
       }
+    }
+
+    public static function readConfig() {
+      return yaml_parse_file(plugin_dir_path(__FILE__) . '/post-types.yml');
     }
 
     private static function registerPostType($post_type_name, $options) {
@@ -52,10 +56,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       self::registerTaxonomies($taxonomies, $post_type_name);
     }
 
-    private static function addCustomFieldsMetaBoxes($custom_fields) {
-
-    }
-
     private static function registerTaxonomies($taxonomies, $post_type_name) {
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
         foreach ($taxonomy_name_and_args as $name => $args) {
@@ -63,9 +63,23 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
         }
       }
     }
+
+    public static function addCustomFieldsMetaBoxes($custom_fields) {
+      # add_action('add_meta_boxes');
+
+    }
+
+    public static function addMetaBoxes() {
+      add_meta_box('youtube_id', 'OH! YOUTUBE!', 'PostTypeNote::renderYoutubeIdMetaBox', 'some_post', 'normal', 'core');
+    }
+
+    public static function renderYoutubeIdMetaBox() {
+      echo "OK";
+    }
   }
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
+  add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
 }
 
 /*

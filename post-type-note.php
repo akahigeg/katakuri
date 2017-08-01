@@ -100,20 +100,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
   add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
 }
 
-class String {
-  public static function underscore($str) {
-    return ltrim(strtolower(preg_replace('/[A-Z]/', '_\0', $str)), '_');
-  }
-
-  public static function camelize($str) {
-    return lcfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
-  }
-
-  public static function pascalize($str) {
-    return ucfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
-  }
-}
-
 /*
 TODO: show args in admin console
 TODO: manage custom field. build forms and save input values

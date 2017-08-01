@@ -29,6 +29,7 @@ some_post:
       unique: false
       type: text
       input: checkbox
+      default: 1
       values:
         - 1
         - 2

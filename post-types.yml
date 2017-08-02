@@ -21,14 +21,16 @@ some_post:
         label: CategoryB
   custom_fields:
     - field1:
+        label: FIELD1
         unique: true
         type: text
         input: text
         list_column: true
     - field2:
+        label: FIELD2
         unique: false
         type: text
-        input: checkbox
+        input: multiple-checkbox
         default: 1
         values:
           - 1

@@ -79,20 +79,41 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     public static function renderMetaBox() {
       global $post;
       $post_type_name = get_post_type($post);
+      $custom_field_values = get_post_custom();
 
       $post_types = self::readConfig();
       if (array_key_exists($post_type_name, $post_types)) {
         $custom_fields = $post_types[$post_type_name]['custom_fields'];
         foreach ($custom_fields as $custom_field) {
           foreach ($custom_field as $name => $options) {
-            echo $name;
+            $input_type = isset($options['input']) ? $options['input'] : "text";
+            $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
+
+            echo '<div>';
+
+            switch ($options['input']) {
+              case 'text':
+                if (isset($options['label'])) {
+                  echo '<label for="' . $name . '">' . $name . '": </label>';
+                }
+                $size = '40';
+                echo '<input name="' . $name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+                break;
+              case 'multiple-checkbox':
+                echo '<label>';
+                foreach ($options['values'] as $value) {
+                  $checked = '';
+                  echo '<input type="checkbox" name="' . $name . '[]" value="' . $value . '" ' . $checked . '>';
+                }
+                echo '</label>';
+                break;
+              default:
+            }
+
+            echo '</div>';
           }
         } 
       }
-    }
-
-    public static function renderSomePostMetaBox() {
-      echo "OK";
     }
   }
   $GLOBALS['post-type-note'] = new PostTypeNote();

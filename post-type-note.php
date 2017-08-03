@@ -93,19 +93,10 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             switch ($options['input']) {
               case 'text':
-                if (isset($options['label'])) {
-                  echo '<label for="' . $name . '">' . $name . '": </label>';
-                }
-                $size = '40';
-                echo '<input name="' . $name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+                self::renderTextField($name, $options);
                 break;
               case 'multiple-checkbox':
-                echo '<label>';
-                foreach ($options['values'] as $value) {
-                  $checked = '';
-                  echo '<input type="checkbox" name="' . $name . '[]" value="' . $value . '" ' . $checked . '>';
-                }
-                echo '</label>';
+                self::renderMultipleCheckbox($name, $options);
                 break;
               default:
             }
@@ -114,6 +105,23 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
           }
         } 
       }
+    }
+
+    public static function renderTextField($field_name, $options) {
+      if (isset($options['label'])) {
+        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
+      }
+      $size = '40';
+      echo '<input name="' . $name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    }
+
+    public static function renderMultipleCheckbox($field_name, $options) {
+                foreach ($options['values'] as $value) {
+                  $checked = '';
+                  echo '<label>';
+                  echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $value . '" ' . $checked . '>';
+                  echo $value . '</label> ';
+                }
     }
   }
   $GLOBALS['post-type-note'] = new PostTypeNote();

@@ -3,6 +3,7 @@ some_post:
     name: Some Post
   public: true
   has_archive: true
+  supports: title
   taxonomies:
     - some_post_tag:
         hierarchical: false
@@ -29,8 +30,19 @@ some_post:
     - field2:
         label: FIELD2
         unique: false
-        type: text
         input: multiple-checkbox
+        default: 1
+        values:
+          - apple
+          - orange
+    - field3:
+        label: FIELD3
+        input: single-checkbox
+        default: 1
+        values: 1
+    - field4:
+        label: FIELD4
+        input: radio
         default: 1
         values:
           - 1

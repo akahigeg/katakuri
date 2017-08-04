@@ -54,6 +54,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       self::registerTaxonomies($taxonomies, $post_type_name);
     }
 
+    # indent
     private static function registerTaxonomies($taxonomies, $post_type_name) {
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
         foreach ($taxonomy_name_and_args as $name => $args) {
@@ -111,7 +112,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
       }
-      $size = '40';
+      $size = isset($options['size']) ? $options['size'] : '40';
       echo '<input name="' . $name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
     }
 

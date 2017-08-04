@@ -26,6 +26,7 @@ some_post:
         unique: true
         type: text
         input: text
+        size: 20
         list_column: true
     - field2:
         label: FIELD2

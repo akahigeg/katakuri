@@ -94,10 +94,10 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             switch ($options['input']) {
               case 'text':
-                self::renderTextField($name, $options);
+                self::renderTextField($name, $saved_value, $options);
                 break;
               case 'multiple-checkbox':
-                self::renderMultipleCheckbox($name, $options);
+                self::renderMultipleCheckbox($name, $saved_value, $options);
                 break;
               default:
             }
@@ -108,15 +108,15 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
-    public static function renderTextField($field_name, $options) {
+    public static function renderTextField($field_name, $saved_value, $options) {
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
       }
       $size = isset($options['size']) ? $options['size'] : '40';
-      echo '<input name="' . $name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+      echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
     }
 
-    public static function renderMultipleCheckbox($field_name, $options) {
+    public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
                 foreach ($options['values'] as $value) {
                   $checked = '';
                   echo '<label>';
@@ -124,10 +124,51 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
                   echo $value . '</label> ';
                 }
     }
+
+    public static function saveMeta($post_id) {
+      $post_type_name = get_post_type($post_id);
+
+      // var_dump($_POST);
+
+      if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+      }
+
+      $post_types = self::readConfig();
+      if (array_key_exists($post_type_name, $post_types)) {
+        $custom_fields = $post_types[$post_type_name]['custom_fields'];
+        foreach ($custom_fields as $custom_field) {
+          foreach ($custom_field as $name => $options) {
+            $input_type = isset($options['input']) ? $options['input'] : "text";
+
+            switch ($options['input']) {
+              case 'text':
+                if (isset($_POST[$name])) {
+                  update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
+                }
+                break;
+              case 'multiple-checkbox':
+                break;
+              default:
+            }
+          }
+        } 
+  
+      // foreach (static::checkboxFlagFields() as $field) {
+      //   if (isset($_POST[$field])) {
+      //     $flag_value = sanitize_text_field($_POST[$field]);
+    
+      //     update_post_meta($post_id, $field, $flag_value);
+      //   } else {
+      //     update_post_meta($post_id, $field, '0'); // WordPressのpostmeta的にfalse
+      //   }
+      }
+    }
   }
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
   add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
+  add_action('save_post', 'PostTypeNote::saveMeta');
 }
 
 /*

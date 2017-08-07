@@ -117,8 +117,13 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
+                $saved_values = maybe_unserialize($saved_value);
                 foreach ($options['values'] as $value) {
-                  $checked = '';
+                  if (is_array($saved_values) && in_array($value, $saved_values)) {
+                    $checked = 'checked';
+                  } else {
+                    $checked = '';
+                  }
                   echo '<label>';
                   echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $value . '" ' . $checked . '>';
                   echo $value . '</label> ';
@@ -148,6 +153,11 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
                 }
                 break;
               case 'multiple-checkbox':
+                if (isset($_POST[$name])) {
+                  update_post_meta($post_id, $name, $_POST[$name]);
+                } else {
+                  update_post_meta($post_id, $name, array());
+                }
                 break;
               default:
             }

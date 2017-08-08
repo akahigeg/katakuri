@@ -32,15 +32,14 @@ some_post:
         label: FIELD2
         unique: false
         input: multiple-checkbox
-        default: 1
         values:
           - apple
           - orange
     - field3:
         label: FIELD3
-        input: single-checkbox
+        input: checkbox
         default: 1
-        values: 1
+        value: I Agree 
     - field4:
         label: FIELD4
         input: radio

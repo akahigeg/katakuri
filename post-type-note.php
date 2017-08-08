@@ -96,6 +96,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'text':
                 self::renderTextField($name, $saved_value, $options);
                 break;
+              case 'checkbox':
+                self::renderCheckbox($name, $saved_value, $options);
+                break;
               case 'multiple-checkbox':
                 self::renderMultipleCheckbox($name, $saved_value, $options);
                 break;
@@ -114,6 +117,14 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
       $size = isset($options['size']) ? $options['size'] : '40';
       echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    }
+
+    public static function renderCheckbox($field_name, $saved_value, $options) {
+      $checked = $saved_value == '1' ? 'checked' : '';
+
+      echo '<label>';
+      echo '<input type="checkbox" name="' . $field_name . '" value="1" ' . $checked . '>';
+      echo $options['value'] . '</label> ';
     }
 
     public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
@@ -152,6 +163,13 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
                   update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
                 }
                 break;
+              case 'checkbox':
+                if (isset($_POST[$name]) && $_POST[$name] == '1') {
+                  update_post_meta($post_id, $name, '1');
+                } else {
+                  update_post_meta($post_id, $name, '0'); // '0' means false
+                }
+                break;
               case 'multiple-checkbox':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, $_POST[$name]);
@@ -163,15 +181,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
             }
           }
         } 
-  
-      // foreach (static::checkboxFlagFields() as $field) {
-      //   if (isset($_POST[$field])) {
-      //     $flag_value = sanitize_text_field($_POST[$field]);
-    
-      //     update_post_meta($post_id, $field, $flag_value);
-      //   } else {
-      //     update_post_meta($post_id, $field, '0'); // WordPressのpostmeta的にfalse
-      //   }
       }
     }
   }

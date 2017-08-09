@@ -102,6 +102,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'multiple-checkbox':
                 self::renderMultipleCheckbox($name, $saved_value, $options);
                 break;
+              case 'radio':
+                self::renderRadio($name, $saved_value, $options);
+                break;
               default:
             }
 
@@ -125,6 +128,25 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       echo '<label>';
       echo '<input type="checkbox" name="' . $field_name . '" value="1" ' . $checked . '>';
       echo $options['value'] . '</label> ';
+    }
+
+    public static function renderRadio($field_name, $saved_value, $options) {
+      $checks = array();
+      foreach ($options['values'] as $value) {
+        if ($saved_value == $value) {
+          $checks[] = $value;
+        }
+      }
+                foreach ($options['values'] as $value) {
+                  if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
+                    $checked = 'checked';
+                  } else {
+                    $checked = '';
+                  }
+                  echo '<label>';
+                  echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
+                  echo $value . '</label> ';
+                }
     }
 
     public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
@@ -159,6 +181,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             switch ($options['input']) {
               case 'text':
+              case 'radio':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
                 }

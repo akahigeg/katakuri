@@ -43,10 +43,11 @@ some_post:
     - field4:
         label: FIELD4
         input: radio
-        default: 1
+        default: cat
         values:
-          - 1
-          - 2
+          - cat
+          - dog
+          - monkey
 another_post:
   labels:
     name: Another Post

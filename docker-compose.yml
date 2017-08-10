@@ -13,6 +13,7 @@ services:
         env_file: .env
         volumes:
           - .:/var/www/html/wp-content/plugins/post-type-note
+          - for-testing:/tmp
     db:
         image: mysql:latest
         env_file: .env
@@ -21,4 +22,6 @@ services:
 
 volumes:
     db-data:
+        driver: local
+    for-testing:
         driver: local

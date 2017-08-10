@@ -3,6 +3,7 @@ some_post:
     name: Some Post
   public: true
   has_archive: true
+  supports: title
   taxonomies:
     - some_post_tag:
         hierarchical: false
@@ -21,17 +22,32 @@ some_post:
         label: CategoryB
   custom_fields:
     - field1:
-      unique: true
-      type: text
-      input: text
-      list_column: true
+        label: FIELD1
+        unique: true
+        type: text
+        input: text
+        size: 20
+        list_column: true
     - field2:
-      unique: false
-      type: text
-      input: checkbox
-      values:
-        - 1
-        - 2
+        label: FIELD2
+        unique: false
+        input: multiple-checkbox
+        values:
+          - apple
+          - orange
+    - field3:
+        label: FIELD3
+        input: checkbox
+        default: 1
+        value: I Agree 
+    - field4:
+        label: FIELD4
+        input: radio
+        default: cat
+        values:
+          - cat
+          - dog
+          - monkey
 another_post:
   labels:
     name: Another Post

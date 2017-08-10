@@ -96,6 +96,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'text':
                 self::renderTextField($name, $saved_value, $options);
                 break;
+              case 'textarea':
+                self::renderTextArea($name, $saved_value, $options);
+                break;
               case 'checkbox':
                 self::renderCheckbox($name, $saved_value, $options);
                 break;
@@ -120,6 +123,15 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
       $size = isset($options['size']) ? $options['size'] : '40';
       echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    }
+
+    public static function renderTextArea($field_name, $saved_value, $options) {
+      if (isset($options['label'])) {
+        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
+      }
+      $rows = isset($options['rows']) ? $options['rows'] : '5';
+      $cols = isset($options['cols']) ? $options['cols'] : '40';
+      echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '">' . $saved_value . '</textarea>';
     }
 
     public static function renderCheckbox($field_name, $saved_value, $options) {
@@ -181,6 +193,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             switch ($options['input']) {
               case 'text':
+              case 'textarea':
               case 'radio':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));

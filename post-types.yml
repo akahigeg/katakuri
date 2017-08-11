@@ -53,6 +53,20 @@ some_post:
         input: textarea
         rows: 8
         cols: 60
+    - field6:
+        label: FIELD6
+        input: select
+        values:
+          - A
+          - B
+          - C
+    - field7:
+        label: FIELD7
+        input: select
+        values:
+          - A: A TYPE
+          - B: B TYPE
+          - C: C TYPE
 another_post:
   labels:
     name: Another Post

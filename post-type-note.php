@@ -108,6 +108,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'radio':
                 self::renderRadio($name, $saved_value, $options);
                 break;
+              case 'select':
+                self::renderSelect($name, $saved_value, $options);
+                break;
               default:
             }
 
@@ -140,6 +143,30 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       echo '<label>';
       echo '<input type="checkbox" name="' . $field_name . '" value="1" ' . $checked . '>';
       echo $options['value'] . '</label> ';
+    }
+
+    public static function renderSelect($field_name, $saved_value, $options) {
+      if (isset($options['label'])) {
+        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
+      }
+
+      echo '<select name=' . $field_name . '>';
+      foreach ($options['values'] as $value) {
+        if (is_array($value)) {
+          $option_value = array_keys($value)[0];
+          $option_label = array_values($value)[0];
+        } else {
+          $option_value = $value;
+          $option_label = $value;
+        }
+        if ($saved_value == $option_value) {
+          $selected = 'selected';
+        } else {
+          $selected = '';
+        }
+        echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+      }
+      echo '</select>';
     }
 
     public static function renderRadio($field_name, $saved_value, $options) {
@@ -195,6 +222,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'text':
               case 'textarea':
               case 'radio':
+              case 'select':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
                 }

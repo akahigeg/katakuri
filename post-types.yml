@@ -67,6 +67,18 @@ some_post:
           - A: A TYPE
           - B: B TYPE
           - C: C TYPE
+    - field8:
+        label: FIELD8
+        input: multiple-select
+        size: 6
+        width: 80
+        values:
+          - A: A TYPE
+          - B: B TYPE
+          - C: C TYPE
+          - D: D TYPE
+          - E: E TYPE
+          - F: F TYPE
 another_post:
   labels:
     name: Another Post

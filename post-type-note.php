@@ -111,6 +111,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'select':
                 self::renderSelect($name, $saved_value, $options);
                 break;
+              case 'multiple-select':
+                self::renderMultipleSelect($name, $saved_value, $options);
+                break;
               default:
             }
 
@@ -146,6 +149,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderSelect($field_name, $saved_value, $options) {
+      $saved_values = array($saved_value);
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
       }
@@ -159,7 +163,36 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
           $option_value = $value;
           $option_label = $value;
         }
-        if ($saved_value == $option_value) {
+        if (in_array($option_value, $saved_values)) {
+          $selected = 'selected';
+        } else {
+          $selected = '';
+        }
+        echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+      }
+      echo '</select>';
+    }
+
+    public static function renderMultipleSelect($field_name, $saved_value, $options) {
+      $saved_values = maybe_unserialize($saved_value);
+
+      if (isset($options['label'])) {
+        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
+      }
+
+      $size = isset($options['size']) ? $options['size'] : '3';
+      $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;' : '';
+
+      echo '<select name=' . $field_name . '[] size="' . $size . '" ' . $width_style . '" multiple>';
+      foreach ($options['values'] as $value) {
+        if (is_array($value)) {
+          $option_value = array_keys($value)[0];
+          $option_label = array_values($value)[0];
+        } else {
+          $option_value = $value;
+          $option_label = $value;
+        }
+        if (in_array($option_value, $saved_values)) {
           $selected = 'selected';
         } else {
           $selected = '';
@@ -235,6 +268,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
                 }
                 break;
               case 'multiple-checkbox':
+              case 'multiple-select':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, $_POST[$name]);
                 } else {

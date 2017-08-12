@@ -11,12 +11,12 @@ Domain Path: /languages
 */
 
 if (!array_key_exists('post-type-note', $GLOBALS)) {
-  class PostTypeNote{
-  	public static function init() {
+  class PostTypeNote {
+    public static function init() {
       $post_types = self::readConfig();
 
       # register each post types
-      foreach($post_types as $post_type_name => $options) {
+      foreach ($post_types as $post_type_name => $options) {
         self::registerPostType($post_type_name, $options);
       }
     }
@@ -45,7 +45,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       # add meta box in admin console for custom fields
       if (array_key_exists('custom_fields', $options)) {
         # $options['custom_fields'] doesn't need from register post_type function
-        unset($options['custom_fields']); 
+        unset($options['custom_fields']);
       }
 
       register_post_type($post_type_name, $options);
@@ -65,7 +65,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
     public static function addMetaBoxes() {
       $post_types = self::readConfig();
-      foreach($post_types as $post_type_name => $options) {
+      foreach ($post_types as $post_type_name => $options) {
         # support one meta box each post type now.
         if (array_key_exists('custom_fields', $options)) {
           $custom_fields = $options['custom_fields'];
@@ -119,7 +119,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             echo '</div>';
           }
-        } 
+        }
       }
     }
 
@@ -199,30 +199,30 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
           $checks[] = $value;
         }
       }
-                foreach ($options['values'] as $value) {
-                  if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
-                    $checked = 'checked';
-                  } else {
-                    $checked = '';
-                  }
-                  echo '<label>';
-                  echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
-                  echo $value . '</label> ';
-                }
+      foreach ($options['values'] as $value) {
+        if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
+          $checked = 'checked';
+        } else {
+          $checked = '';
+        }
+        echo '<label>';
+        echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
+        echo $value . '</label> ';
+      }
     }
 
     public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
-                $saved_values = maybe_unserialize($saved_value);
-                foreach ($options['values'] as $value) {
-                  if (is_array($saved_values) && in_array($value, $saved_values)) {
-                    $checked = 'checked';
-                  } else {
-                    $checked = '';
-                  }
-                  echo '<label>';
-                  echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $value . '" ' . $checked . '>';
-                  echo $value . '</label> ';
-                }
+      $saved_values = maybe_unserialize($saved_value);
+      foreach ($options['values'] as $value) {
+        if (is_array($saved_values) && in_array($value, $saved_values)) {
+          $checked = 'checked';
+        } else {
+          $checked = '';
+        }
+        echo '<label>';
+        echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $value . '" ' . $checked . '>';
+        echo $value . '</label> ';
+      }
     }
 
     public static function saveMeta($post_id) {
@@ -268,7 +268,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               default:
             }
           }
-        } 
+        }
       }
     }
   }

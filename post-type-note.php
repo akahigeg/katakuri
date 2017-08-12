@@ -155,21 +155,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
 
       echo '<select name=' . $field_name . '>';
-      foreach ($options['values'] as $value) {
-        if (is_array($value)) {
-          $option_value = array_keys($value)[0];
-          $option_label = array_values($value)[0];
-        } else {
-          $option_value = $value;
-          $option_label = $value;
-        }
-        if (in_array($option_value, $saved_values)) {
-          $selected = 'selected';
-        } else {
-          $selected = '';
-        }
-        echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
-      }
+      self::renderOptions($saved_values, $options);
       echo '</select>';
     }
 
@@ -184,6 +170,11 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;' : '';
 
       echo '<select name=' . $field_name . '[] size="' . $size . '" ' . $width_style . '" multiple>';
+      self::renderOptions($saved_values, $options);
+      echo '</select>';
+    }
+
+    public static function renderOptions($saved_values, $options) {
       foreach ($options['values'] as $value) {
         if (is_array($value)) {
           $option_value = array_keys($value)[0];
@@ -199,7 +190,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
         }
         echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
       }
-      echo '</select>';
     }
 
     public static function renderRadio($field_name, $saved_value, $options) {

@@ -11,12 +11,12 @@ Domain Path: /languages
 */
 
 if (!array_key_exists('post-type-note', $GLOBALS)) {
-  class PostTypeNote{
-  	public static function init() {
+  class PostTypeNote {
+    public static function init() {
       $post_types = self::readConfig();
 
       # register each post types
-      foreach($post_types as $post_type_name => $options) {
+      foreach ($post_types as $post_type_name => $options) {
         self::registerPostType($post_type_name, $options);
       }
     }
@@ -45,7 +45,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       # add meta box in admin console for custom fields
       if (array_key_exists('custom_fields', $options)) {
         # $options['custom_fields'] doesn't need from register post_type function
-        unset($options['custom_fields']); 
+        unset($options['custom_fields']);
       }
 
       register_post_type($post_type_name, $options);
@@ -54,7 +54,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       self::registerTaxonomies($taxonomies, $post_type_name);
     }
 
-    # indent
     private static function registerTaxonomies($taxonomies, $post_type_name) {
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
         foreach ($taxonomy_name_and_args as $name => $args) {
@@ -65,7 +64,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
     public static function addMetaBoxes() {
       $post_types = self::readConfig();
-      foreach($post_types as $post_type_name => $options) {
+      foreach ($post_types as $post_type_name => $options) {
         # support one meta box each post type now.
         if (array_key_exists('custom_fields', $options)) {
           $custom_fields = $options['custom_fields'];
@@ -92,75 +91,13 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             echo '<div>';
 
-            switch ($options['input']) {
-              case 'text':
-                self::renderTextField($name, $saved_value, $options);
-                break;
-              case 'checkbox':
-                self::renderCheckbox($name, $saved_value, $options);
-                break;
-              case 'multiple-checkbox':
-                self::renderMultipleCheckbox($name, $saved_value, $options);
-                break;
-              case 'radio':
-                self::renderRadio($name, $saved_value, $options);
-                break;
-              default:
-            }
+            $method_name = 'render' . PostTypeNoteUtil::pascalize($options['input']);
+            PostTypeNoteFormRenderer::$method_name($name, $saved_value, $options);
 
             echo '</div>';
           }
-        } 
-      }
-    }
-
-    public static function renderTextField($field_name, $saved_value, $options) {
-      if (isset($options['label'])) {
-        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
-      }
-      $size = isset($options['size']) ? $options['size'] : '40';
-      echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
-    }
-
-    public static function renderCheckbox($field_name, $saved_value, $options) {
-      $checked = $saved_value == '1' ? 'checked' : '';
-
-      echo '<label>';
-      echo '<input type="checkbox" name="' . $field_name . '" value="1" ' . $checked . '>';
-      echo $options['value'] . '</label> ';
-    }
-
-    public static function renderRadio($field_name, $saved_value, $options) {
-      $checks = array();
-      foreach ($options['values'] as $value) {
-        if ($saved_value == $value) {
-          $checks[] = $value;
         }
       }
-                foreach ($options['values'] as $value) {
-                  if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
-                    $checked = 'checked';
-                  } else {
-                    $checked = '';
-                  }
-                  echo '<label>';
-                  echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
-                  echo $value . '</label> ';
-                }
-    }
-
-    public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
-                $saved_values = maybe_unserialize($saved_value);
-                foreach ($options['values'] as $value) {
-                  if (is_array($saved_values) && in_array($value, $saved_values)) {
-                    $checked = 'checked';
-                  } else {
-                    $checked = '';
-                  }
-                  echo '<label>';
-                  echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $value . '" ' . $checked . '>';
-                  echo $value . '</label> ';
-                }
     }
 
     public static function saveMeta($post_id) {
@@ -181,19 +118,14 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             switch ($options['input']) {
               case 'text':
+              case 'textarea':
               case 'radio':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
                 }
                 break;
               case 'checkbox':
-                if (isset($_POST[$name]) && $_POST[$name] == '1') {
-                  update_post_meta($post_id, $name, '1');
-                } else {
-                  update_post_meta($post_id, $name, '0'); // '0' means false
-                }
-                break;
-              case 'multiple-checkbox':
+              case 'select':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, $_POST[$name]);
                 } else {
@@ -203,10 +135,128 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               default:
             }
           }
-        } 
+        }
       }
     }
   }
+
+  class PostTypeNoteFormRenderer {
+    public static function renderText($field_name, $saved_value, $options) {
+      self::renderLabel($field_name, $options);
+
+      $size = isset($options['size']) ? $options['size'] : '40';
+      echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    }
+
+    public static function renderCheckbox($field_name, $saved_value, $options) {
+      $saved_values = maybe_unserialize($saved_value);
+      foreach ($options['values'] as $value) {
+        if (is_array($value)) {
+          $option_value = array_keys($value)[0];
+          $option_label = array_values($value)[0];
+        } else {
+          $option_value = $value;
+          $option_label = $value;
+        }
+        if (is_array($saved_values) && in_array($option_value, $saved_values)) {
+          $checked = 'checked';
+        } else {
+          $checked = '';
+        }
+        echo '<label>';
+        echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $checked . '>';
+        echo $option_label . '</label> ';
+      }
+    }
+
+    public static function renderRadio($field_name, $saved_value, $options) {
+      $checks = array();
+      foreach ($options['values'] as $value) {
+        if ($saved_value == $value) {
+          $checks[] = $value;
+        }
+      }
+      foreach ($options['values'] as $value) {
+        if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
+          $checked = 'checked';
+        } else {
+          $checked = '';
+        }
+        echo '<label>';
+        echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
+        echo $value . '</label> ';
+      }
+    }
+
+    public static function renderTextarea($field_name, $saved_value, $options) {
+      self::renderLabel($field_name, $options);
+
+      $rows = isset($options['rows']) ? $options['rows'] : '5';
+      $cols = isset($options['cols']) ? $options['cols'] : '40';
+      echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '">' . $saved_value . '</textarea>';
+    }
+
+    public static function renderCheckboxs($field_name, $saved_value, $options) {
+      $checked = $saved_value == '1' ? 'checked' : '';
+
+      echo '<label>';
+      echo '<input type="checkbox" name="' . $field_name . '" value="1" ' . $checked . '>';
+      echo $options['value'] . '</label> ';
+    }
+
+    public static function renderSelect($field_name, $saved_value, $options) {
+      $saved_values = maybe_unserialize($saved_value);
+
+      self::renderLabel($field_name, $options);
+
+      $size = isset($options['size']) ? 'size="' . $options['size'] . '"' : '';
+      $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;"' : '';
+      $multiple = isset($options['multiple']) && $options['multiple'] == true ? 'multiple' : '';
+
+      echo '<select name="' . $field_name . '[]" ' . $size . ' ' . $width_style . ' ' . $multiple . '>';
+      self::renderOptions($saved_values, $options);
+      echo '</select>';
+    }
+
+    public static function renderOptions($saved_values, $options) {
+      foreach ($options['values'] as $value) {
+        if (is_array($value)) {
+          $option_value = array_keys($value)[0];
+          $option_label = array_values($value)[0];
+        } else {
+          $option_value = $value;
+          $option_label = $value;
+        }
+        if (in_array($option_value, $saved_values)) {
+          $selected = 'selected';
+        } else {
+          $selected = '';
+        }
+        echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+      }
+    }
+
+    public static function renderLabel($field_name, $options) {
+      if (isset($options['label'])) {
+        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
+      }
+    }
+  }
+  
+  class PostTypeNoteUtil {
+    public static function underscore($str) {
+      return ltrim(strtolower(preg_replace('/[A-Z]/', '_\0', $str)), '_');
+    }
+
+    public static function camelize($str) {
+      return lcfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+    }
+
+    public static function pascalize($str) {
+      return ucfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+    }
+  }
+
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
   add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');

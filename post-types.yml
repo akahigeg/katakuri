@@ -31,7 +31,7 @@ some_post:
     - field2:
         label: FIELD2
         unique: false
-        input: multiple-checkbox
+        input: checkbox
         values:
           - apple
           - orange
@@ -39,7 +39,8 @@ some_post:
         label: FIELD3
         input: checkbox
         default: 1
-        value: I Agree 
+        values: 
+          - 1: I Agree
     - field4:
         label: FIELD4
         input: radio
@@ -48,6 +49,38 @@ some_post:
           - cat
           - dog
           - monkey
+    - field5:
+        label: FIELD5
+        input: textarea
+        rows: 8
+        cols: 60
+    - field6:
+        label: FIELD6
+        input: select
+        values:
+          - A
+          - B
+          - C
+    - field7:
+        label: FIELD7
+        input: select
+        values:
+          - A: A TYPE
+          - B: B TYPE
+          - C: C TYPE
+    - field8:
+        label: FIELD8
+        input: select
+        size: 6
+        width: 80
+        multiple: true
+        values:
+          - A: A TYPE
+          - B: B TYPE
+          - C: C TYPE
+          - D: D TYPE
+          - E: E TYPE
+          - F: F TYPE
 another_post:
   labels:
     name: Another Post

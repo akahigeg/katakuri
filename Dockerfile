@@ -12,3 +12,6 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
+RUN wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O php-cs-fixer && \
+    chmod a+x php-cs-fixer && \
+    mv php-cs-fixer /usr/local/bin/php-cs-fixer

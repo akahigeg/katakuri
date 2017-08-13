@@ -70,9 +70,10 @@ some_post:
           - C: C TYPE
     - field8:
         label: FIELD8
-        input: multiple-select
+        input: select
         size: 6
         width: 80
+        multiple: true
         values:
           - A: A TYPE
           - B: B TYPE

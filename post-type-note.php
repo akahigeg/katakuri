@@ -91,7 +91,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             echo '<div>';
 
-            $method_name = 'render' . PostTypeNoteUtil::pascalize(str_replace('-', '_', $options['input']));
+            $method_name = 'render' . PostTypeNoteUtil::pascalize($options['input']);
             PostTypeNoteFormRenderer::$method_name($name, $saved_value, $options);
 
             echo '</div>';
@@ -120,13 +120,12 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'text':
               case 'textarea':
               case 'radio':
-              case 'select':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
                 }
                 break;
               case 'checkbox':
-              case 'multiple-select':
+              case 'select':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, $_POST[$name]);
                 } else {
@@ -143,9 +142,8 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
   class PostTypeNoteFormRenderer {
     public static function renderText($field_name, $saved_value, $options) {
-      if (isset($options['label'])) {
-        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
-      }
+      self::renderLabel($field_name, $options);
+
       $size = isset($options['size']) ? $options['size'] : '40';
       echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
     }
@@ -191,9 +189,8 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderTextarea($field_name, $saved_value, $options) {
-      if (isset($options['label'])) {
-        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
-      }
+      self::renderLabel($field_name, $options);
+
       $rows = isset($options['rows']) ? $options['rows'] : '5';
       $cols = isset($options['cols']) ? $options['cols'] : '40';
       echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '">' . $saved_value . '</textarea>';
@@ -208,27 +205,15 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderSelect($field_name, $saved_value, $options) {
-      $saved_values = array($saved_value);
-      if (isset($options['label'])) {
-        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
-      }
-
-      echo '<select name=' . $field_name . '>';
-      self::renderOptions($saved_values, $options);
-      echo '</select>';
-    }
-
-    public static function renderMultipleSelect($field_name, $saved_value, $options) {
       $saved_values = maybe_unserialize($saved_value);
 
-      if (isset($options['label'])) {
-        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
-      }
+      self::renderLabel($field_name, $options);
 
-      $size = isset($options['size']) ? $options['size'] : '3';
-      $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;' : '';
+      $size = isset($options['size']) ? 'size="' . $options['size'] . '"' : '';
+      $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;"' : '';
+      $multiple = isset($options['multiple']) && $options['multiple'] == true ? 'multiple' : '';
 
-      echo '<select name=' . $field_name . '[] size="' . $size . '" ' . $width_style . '" multiple>';
+      echo '<select name="' . $field_name . '[]" ' . $size . ' ' . $width_style . ' ' . $multiple . '>';
       self::renderOptions($saved_values, $options);
       echo '</select>';
     }
@@ -248,6 +233,12 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
           $selected = '';
         }
         echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+      }
+    }
+
+    public static function renderLabel($field_name, $options) {
+      if (isset($options['label'])) {
+        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
       }
     }
   }

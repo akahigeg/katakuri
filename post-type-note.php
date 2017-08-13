@@ -93,22 +93,22 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             switch ($options['input']) {
               case 'text':
-                self::renderTextField($name, $saved_value, $options);
+                PostTypeNoteFormRenderer::renderTextField($name, $saved_value, $options);
                 break;
               case 'textarea':
-                self::renderTextArea($name, $saved_value, $options);
+                PostTypeNoteFormRenderer::renderTextArea($name, $saved_value, $options);
                 break;
               case 'checkbox':
-                self::renderCheckbox($name, $saved_value, $options);
+                PostTypeNoteFormRenderer::renderCheckbox($name, $saved_value, $options);
                 break;
               case 'radio':
-                self::renderRadio($name, $saved_value, $options);
+                PostTypeNoteFormRenderer::renderRadio($name, $saved_value, $options);
                 break;
               case 'select':
-                self::renderSelect($name, $saved_value, $options);
+                PostTypeNoteFormRenderer::renderSelect($name, $saved_value, $options);
                 break;
               case 'multiple-select':
-                self::renderMultipleSelect($name, $saved_value, $options);
+                PostTypeNoteFormRenderer::renderMultipleSelect($name, $saved_value, $options);
                 break;
               default:
             }
@@ -118,7 +118,48 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
         }
       }
     }
+    public static function saveMeta($post_id) {
+      $post_type_name = get_post_type($post_id);
 
+      // var_dump($_POST);
+
+      if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+      }
+
+      $post_types = self::readConfig();
+      if (array_key_exists($post_type_name, $post_types)) {
+        $custom_fields = $post_types[$post_type_name]['custom_fields'];
+        foreach ($custom_fields as $custom_field) {
+          foreach ($custom_field as $name => $options) {
+            $input_type = isset($options['input']) ? $options['input'] : "text";
+
+            switch ($options['input']) {
+              case 'text':
+              case 'textarea':
+              case 'radio':
+              case 'select':
+                if (isset($_POST[$name])) {
+                  update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
+                }
+                break;
+              case 'checkbox':
+              case 'multiple-select':
+                if (isset($_POST[$name])) {
+                  update_post_meta($post_id, $name, $_POST[$name]);
+                } else {
+                  update_post_meta($post_id, $name, array());
+                }
+                break;
+              default:
+            }
+          }
+        }
+      }
+    }
+  }
+
+  class PostTypeNoteFormRenderer {
     public static function renderTextField($field_name, $saved_value, $options) {
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
@@ -228,46 +269,10 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
-    public static function saveMeta($post_id) {
-      $post_type_name = get_post_type($post_id);
-
-      // var_dump($_POST);
-
-      if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
-      }
-
-      $post_types = self::readConfig();
-      if (array_key_exists($post_type_name, $post_types)) {
-        $custom_fields = $post_types[$post_type_name]['custom_fields'];
-        foreach ($custom_fields as $custom_field) {
-          foreach ($custom_field as $name => $options) {
-            $input_type = isset($options['input']) ? $options['input'] : "text";
-
-            switch ($options['input']) {
-              case 'text':
-              case 'textarea':
-              case 'radio':
-              case 'select':
-                if (isset($_POST[$name])) {
-                  update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
-                }
-                break;
-              case 'checkbox':
-              case 'multiple-select':
-                if (isset($_POST[$name])) {
-                  update_post_meta($post_id, $name, $_POST[$name]);
-                } else {
-                  update_post_meta($post_id, $name, array());
-                }
-                break;
-              default:
-            }
-          }
-        }
-      }
-    }
   }
+
+
+
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
   add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');

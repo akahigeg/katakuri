@@ -31,7 +31,7 @@ some_post:
     - field2:
         label: FIELD2
         unique: false
-        input: multiple-checkbox
+        input: checkbox
         values:
           - apple
           - orange
@@ -39,7 +39,8 @@ some_post:
         label: FIELD3
         input: checkbox
         default: 1
-        value: I Agree 
+        values: 
+          - 1: I Agree
     - field4:
         label: FIELD4
         input: radio

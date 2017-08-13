@@ -54,7 +54,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       self::registerTaxonomies($taxonomies, $post_type_name);
     }
 
-    # indent
     private static function registerTaxonomies($taxonomies, $post_type_name) {
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
         foreach ($taxonomy_name_and_args as $name => $args) {
@@ -102,9 +101,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
               case 'checkbox':
                 self::renderCheckbox($name, $saved_value, $options);
                 break;
-              case 'multiple-checkbox':
-                self::renderMultipleCheckbox($name, $saved_value, $options);
-                break;
               case 'radio':
                 self::renderRadio($name, $saved_value, $options);
                 break;
@@ -131,6 +127,46 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
     }
 
+    public static function renderCheckbox($field_name, $saved_value, $options) {
+      $saved_values = maybe_unserialize($saved_value);
+      foreach ($options['values'] as $value) {
+        if (is_array($value)) {
+          $option_value = array_keys($value)[0];
+          $option_label = array_values($value)[0];
+        } else {
+          $option_value = $value;
+          $option_label = $value;
+        }
+        if (is_array($saved_values) && in_array($option_value, $saved_values)) {
+          $checked = 'checked';
+        } else {
+          $checked = '';
+        }
+        echo '<label>';
+        echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $checked . '>';
+        echo $option_label . '</label> ';
+      }
+    }
+
+    public static function renderRadio($field_name, $saved_value, $options) {
+      $checks = array();
+      foreach ($options['values'] as $value) {
+        if ($saved_value == $value) {
+          $checks[] = $value;
+        }
+      }
+      foreach ($options['values'] as $value) {
+        if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
+          $checked = 'checked';
+        } else {
+          $checked = '';
+        }
+        echo '<label>';
+        echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
+        echo $value . '</label> ';
+      }
+    }
+
     public static function renderTextArea($field_name, $saved_value, $options) {
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
@@ -140,7 +176,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '">' . $saved_value . '</textarea>';
     }
 
-    public static function renderCheckbox($field_name, $saved_value, $options) {
+    public static function renderCheckboxs($field_name, $saved_value, $options) {
       $checked = $saved_value == '1' ? 'checked' : '';
 
       echo '<label>';
@@ -192,39 +228,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
-    public static function renderRadio($field_name, $saved_value, $options) {
-      $checks = array();
-      foreach ($options['values'] as $value) {
-        if ($saved_value == $value) {
-          $checks[] = $value;
-        }
-      }
-      foreach ($options['values'] as $value) {
-        if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
-          $checked = 'checked';
-        } else {
-          $checked = '';
-        }
-        echo '<label>';
-        echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
-        echo $value . '</label> ';
-      }
-    }
-
-    public static function renderMultipleCheckbox($field_name, $saved_value, $options) {
-      $saved_values = maybe_unserialize($saved_value);
-      foreach ($options['values'] as $value) {
-        if (is_array($saved_values) && in_array($value, $saved_values)) {
-          $checked = 'checked';
-        } else {
-          $checked = '';
-        }
-        echo '<label>';
-        echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $value . '" ' . $checked . '>';
-        echo $value . '</label> ';
-      }
-    }
-
     public static function saveMeta($post_id) {
       $post_type_name = get_post_type($post_id);
 
@@ -251,13 +254,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
                 }
                 break;
               case 'checkbox':
-                if (isset($_POST[$name]) && $_POST[$name] == '1') {
-                  update_post_meta($post_id, $name, '1');
-                } else {
-                  update_post_meta($post_id, $name, '0'); // '0' means false
-                }
-                break;
-              case 'multiple-checkbox':
               case 'multiple-select':
                 if (isset($_POST[$name])) {
                   update_post_meta($post_id, $name, $_POST[$name]);

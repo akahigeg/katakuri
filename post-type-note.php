@@ -103,8 +103,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     public static function saveMeta($post_id) {
       $post_type_name = get_post_type($post_id);
 
-      // var_dump($_POST);
-
       if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
       }
@@ -194,14 +192,6 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       $rows = isset($options['rows']) ? $options['rows'] : '5';
       $cols = isset($options['cols']) ? $options['cols'] : '40';
       echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '">' . $saved_value . '</textarea>';
-    }
-
-    public static function renderCheckboxs($field_name, $saved_value, $options) {
-      $checked = $saved_value == '1' ? 'checked' : '';
-
-      echo '<label>';
-      echo '<input type="checkbox" name="' . $field_name . '" value="1" ' . $checked . '>';
-      echo $options['value'] . '</label> ';
     }
 
     public static function renderSelect($field_name, $saved_value, $options) {

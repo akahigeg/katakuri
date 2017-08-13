@@ -91,33 +91,15 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             echo '<div>';
 
-            switch ($options['input']) {
-              case 'text':
-                PostTypeNoteFormRenderer::renderTextField($name, $saved_value, $options);
-                break;
-              case 'textarea':
-                PostTypeNoteFormRenderer::renderTextArea($name, $saved_value, $options);
-                break;
-              case 'checkbox':
-                PostTypeNoteFormRenderer::renderCheckbox($name, $saved_value, $options);
-                break;
-              case 'radio':
-                PostTypeNoteFormRenderer::renderRadio($name, $saved_value, $options);
-                break;
-              case 'select':
-                PostTypeNoteFormRenderer::renderSelect($name, $saved_value, $options);
-                break;
-              case 'multiple-select':
-                PostTypeNoteFormRenderer::renderMultipleSelect($name, $saved_value, $options);
-                break;
-              default:
-            }
+            $method_name = 'render' . PostTypeNoteUtil::pascalize(str_replace('-', '_', $options['input']));
+            PostTypeNoteFormRenderer::$method_name($name, $saved_value, $options);
 
             echo '</div>';
           }
         }
       }
     }
+
     public static function saveMeta($post_id) {
       $post_type_name = get_post_type($post_id);
 
@@ -160,7 +142,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
   }
 
   class PostTypeNoteFormRenderer {
-    public static function renderTextField($field_name, $saved_value, $options) {
+    public static function renderText($field_name, $saved_value, $options) {
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
       }
@@ -208,7 +190,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
-    public static function renderTextArea($field_name, $saved_value, $options) {
+    public static function renderTextarea($field_name, $saved_value, $options) {
       if (isset($options['label'])) {
         echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
       }
@@ -268,10 +250,21 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
         echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
       }
     }
-
   }
+  
+  class PostTypeNoteUtil {
+    public static function underscore($str) {
+      return ltrim(strtolower(preg_replace('/[A-Z]/', '_\0', $str)), '_');
+    }
 
+    public static function camelize($str) {
+      return lcfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+    }
 
+    public static function pascalize($str) {
+      return ucfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+    }
+  }
 
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');

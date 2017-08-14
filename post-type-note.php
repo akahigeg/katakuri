@@ -147,6 +147,8 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderCheckbox($field_name, $saved_value, $options) {
+      self::renderLabel($field_name, $options);
+      
       $saved_values = maybe_unserialize($saved_value);
       foreach ($options['values'] as $value) {
         if (is_array($value)) {
@@ -168,6 +170,8 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderRadio($field_name, $saved_value, $options) {
+      self::renderLabel($field_name, $options);
+
       $checks = array();
       foreach ($options['values'] as $value) {
         if ($saved_value == $value) {
@@ -195,9 +199,9 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function renderSelect($field_name, $saved_value, $options) {
-      $saved_values = maybe_unserialize($saved_value);
-
       self::renderLabel($field_name, $options);
+
+      $saved_values = maybe_unserialize($saved_value);
 
       $size = isset($options['size']) ? 'size="' . $options['size'] . '"' : '';
       $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;"' : '';

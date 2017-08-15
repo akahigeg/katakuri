@@ -63,12 +63,42 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
+    public static function manageColumns($columns) {
+      $date_escape = $columns['date'];
+      unset($columns['date']);
+
+      $post_types = self::readConfig();
+      $current_post_type = get_post_type();
+      if (isset($post_types[$current_post_type]) 
+          && isset($post_types[$current_post_type]['custom_fields'])) {
+        foreach ($post_types[$current_post_type]['custom_fields'] as $custom_field) {
+          foreach ($custom_field as $name => $options) {
+            if ($options['list_column']) {
+              $columns[$name] = $name;
+            }
+          }
+        }
+      }
+
+      $columns['date'] = $date_escape;
+
+      return $columns;
+    }
+
+    public static function manageCustomColumns($column_name, $post_id) {
+      $saved_value = get_post_meta($post_id, $column_name, true);
+      if (is_array($saved_value)) {
+        echo implode($saved_value, ',');
+      } else {
+        echo $saved_value;
+      }
+    }
+
     public static function addMetaBoxes() {
       $post_types = self::readConfig();
       foreach ($post_types as $post_type_name => $options) {
         # support one meta box each post type now.
         if (array_key_exists('custom_fields', $options)) {
-          $custom_fields = $options['custom_fields'];
           add_meta_box($post_type_name. '_meta_box', 
                        'Custom Fields', 
                        'PostTypeNote::renderMetaBox', 
@@ -109,7 +139,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
 
       $post_types = self::readConfig();
-      if (array_key_exists($post_type_name, $post_types)) {
+      if (array_key_exists($post_type_name, $post_types) && isset($post_types[$post_type_name]['custom_fields'])) {
         $custom_fields = $post_types[$post_type_name]['custom_fields'];
         foreach ($custom_fields as $custom_field) {
           foreach ($custom_field as $name => $options) {
@@ -250,21 +280,25 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     public static function pascalize($str) {
       return ucfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
     }
+
+    public function __call($name, $args) {
+      echo $name;
+    }
   }
 
   $GLOBALS['post-type-note'] = new PostTypeNote();
   add_action('init', 'PostTypeNote::init');
   add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
   add_action('save_post', 'PostTypeNote::saveMeta');
+
+  add_action('manage_posts_columns', 'PostTypeNote::manageColumns');
+  add_action('manage_posts_custom_column', 'PostTypeNote::manageCustomColumns', 10, 2);
 }
 
 /*
 TODO: show args in admin console
 TODO: manage custom field. build forms and save input values
 TODO: comment
-TODO: add_action('save_post', save_meta_func)
-TODO: add_filter('manage_<post_type>_posts_columns', )
-TODO: add_action('manage_<post_type>_posts_custom_columns', )
 TODO: add_filter('manage_edit-<post_type>_sortable_columns', )
 TODO: add_filter('request', <order>)
 */

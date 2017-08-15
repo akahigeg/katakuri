@@ -35,12 +35,14 @@ some_post:
         values:
           - apple
           - orange
+        list_column: false
     - field3:
         label: FIELD3
         input: checkbox
         default: 1
         values: 
           - 1: I Agree
+        list_column: true
     - field4:
         label: FIELD4
         input: radio

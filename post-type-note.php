@@ -1,12 +1,13 @@
 <?php
 /*
-Plugin Name: post-type-note
+Plugin Name: PostTypeNote
 Version: 0.1-alpha
-Description: PLUGIN DESCRIPTION HERE
+Description: Define custom post types, taxonomies and custom fields by static YAML file
 Author: akahigeg
-Author URI: http://brassworks.jp/
-Plugin URI: http://brassworks.jp/
+Author URI: http://higelog.brassworks.jp/
+Plugin URI: https://github.com/akahigeg/post-type-note
 Text Domain: post-type-note
+License: Apache License 2.0
 Domain Path: /languages
 */
 
@@ -148,7 +149,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
     public static function renderCheckbox($field_name, $saved_value, $options) {
       self::renderLabel($field_name, $options);
-      
+
       $saved_values = maybe_unserialize($saved_value);
       foreach ($options['values'] as $value) {
         if (is_array($value)) {

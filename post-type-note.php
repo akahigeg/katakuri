@@ -27,6 +27,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     private static function registerPostType($post_type_name, $options) {
+      $register_options = $options['register_options'];
       # taxonomies links a post type
       $taxonomies = array();
       if (array_key_exists('taxonomies', $options)) {
@@ -40,16 +41,10 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
           }
         }
         # $options["taxonomies"] in only taxxonomy names for regsiter_post_type
-        $options["taxonomies"] = $taxonomy_names;
+        $register_options["taxonomies"] = $taxonomy_names;
       }
 
-      # add meta box in admin console for custom fields
-      if (array_key_exists('custom_fields', $options)) {
-        # $options['custom_fields'] doesn't need from register post_type function
-        unset($options['custom_fields']);
-      }
-
-      register_post_type($post_type_name, $options);
+      register_post_type($post_type_name, $register_options);
 
       # register taxonomies
       self::registerTaxonomies($taxonomies, $post_type_name);
@@ -299,6 +294,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 TODO: show args in admin console
 TODO: manage custom field. build forms and save input values
 TODO: comment
+TODO: add_action('save_post', save_meta_func)
 TODO: add_filter('manage_edit-<post_type>_sortable_columns', )
 TODO: add_filter('request', <order>)
 */

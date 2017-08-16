@@ -1,9 +1,10 @@
 some_post:
-  labels:
-    name: Some Post
-  public: true
-  has_archive: true
-  supports: title
+  register_options:
+    labels:
+      name: Some Post
+    public: true
+    has_archive: true
+    supports: title
   taxonomies:
     - some_post_tag:
         hierarchical: false
@@ -84,8 +85,9 @@ some_post:
           - E: E TYPE
           - F: F TYPE
 another_post:
-  labels:
-    name: Another Post
-  public: true
-  has_archive: true
-  hierarchical: true
+  register_options:
+    labels:
+      name: Another Post
+    public: true
+    has_archive: true
+    hierarchical: true

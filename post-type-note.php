@@ -162,6 +162,15 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
         }
       }
     }
+
+    public static function addActions() {
+      add_action('init', 'PostTypeNote::init');
+      add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
+      add_action('save_post', 'PostTypeNote::saveMeta');
+
+      add_action('manage_posts_columns', 'PostTypeNote::manageColumns');
+      add_action('manage_posts_custom_column', 'PostTypeNote::manageCustomColumns', 10, 2);
+    }
   }
 
   $include_path = plugin_dir_path(__FILE__) . 'includes';
@@ -169,14 +178,8 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
   require_once($include_path . '/PostTypeNoteUtil.php');
 
   $GLOBALS['post-type-note'] = new PostTypeNote();
-  add_action('init', 'PostTypeNote::init');
-  add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
-  add_action('save_post', 'PostTypeNote::saveMeta');
-
-  add_action('manage_posts_columns', 'PostTypeNote::manageColumns');
-  add_action('manage_posts_custom_column', 'PostTypeNote::manageCustomColumns', 10, 2);
+  PostTypeNote::addActions();
   // add_filter('manage_edit-hoge_sortable_columns', 'PostTypeNote::hoge');
-
 }
 
 /*

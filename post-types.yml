@@ -21,6 +21,8 @@ some_post:
         public: true
         show_ui: true
         label: CategoryB
+  sortable_columns:
+    - field3
   custom_fields:
     - field1:
         label: FIELD1

@@ -163,6 +163,27 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
       }
     }
 
+    public static function manageSortableColumns() {
+      $post_types = self::readConfig();
+
+      foreach ($post_types as $post_type_name => $options) {
+        if (isset($options['sortable_columns'])) {
+          add_filter('manage_edit-' . $post_type_name . '_sortable_columns', 'PostTypeNote::sortableColumns');
+        }
+      }
+    }
+
+    public static function sortableColumns() {
+      $post_types = self::readConfig();
+
+      $sortable = $post_types[get_post_type()]['sortable_columns'];
+      foreach ($sortable as $i => $column) {
+        $sortable_columns[$column] = $column;
+      }
+
+      return $sortable_columns;
+    }
+
     public static function addActions() {
       add_action('init', 'PostTypeNote::init');
       add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
@@ -179,6 +200,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
   $GLOBALS['post-type-note'] = new PostTypeNote();
   PostTypeNote::addActions();
+  PostTypeNote::manageSortableColumns();
   // add_filter('manage_edit-hoge_sortable_columns', 'PostTypeNote::hoge');
 }
 

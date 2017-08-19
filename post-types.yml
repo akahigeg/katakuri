@@ -1,9 +1,10 @@
 some_post:
-  labels:
-    name: Some Post
-  public: true
-  has_archive: true
-  supports: title
+  register_options:
+    labels:
+      name: Some Post
+    public: true
+    has_archive: true
+    supports: title
   taxonomies:
     - some_post_tag:
         hierarchical: false
@@ -20,6 +21,8 @@ some_post:
         public: true
         show_ui: true
         label: CategoryB
+  sortable_columns:
+    - field3
   custom_fields:
     - field1:
         label: FIELD1
@@ -35,12 +38,14 @@ some_post:
         values:
           - apple
           - orange
+        list_column: false
     - field3:
         label: FIELD3
         input: checkbox
         default: 1
         values: 
           - 1: I Agree
+        list_column: true
     - field4:
         label: FIELD4
         input: radio
@@ -82,8 +87,9 @@ some_post:
           - E: E TYPE
           - F: F TYPE
 another_post:
-  labels:
-    name: Another Post
-  public: true
-  has_archive: true
-  hierarchical: true
+  register_options:
+    labels:
+      name: Another Post
+    public: true
+    has_archive: true
+    hierarchical: true

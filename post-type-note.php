@@ -23,7 +23,11 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function readConfig() {
-      return yaml_parse_file(plugin_dir_path(__FILE__) . '/post-types.yml');
+      $yaml_path = ABSPATH . '/post-types.yml';
+      if (!file_exists($yaml_path)) {
+        $yaml_path = plugin_dir_path(__FILE__) . '/post-types.yml-sample';
+      }
+      return yaml_parse_file($yaml_path);
     }
 
     private static function registerPostType($post_type_name, $options) {

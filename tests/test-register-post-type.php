@@ -9,7 +9,6 @@
  * Register post type test case.
  */
 class RegisterPostTypeTest extends WP_UnitTestCase {
-
 	/**
 	 * some_post
 	 */

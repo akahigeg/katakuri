@@ -1,5 +1,5 @@
 <?php
-  class PostTypeNoteUtil {
+  class KatakuriUtil {
     public static function underscore($str) {
       return ltrim(strtolower(preg_replace('/[A-Z]/', '_\0', $str)), '_');
     }

@@ -1,18 +1,18 @@
 <?php
 /*
-Plugin Name: PostTypeNote
+Plugin Name: Katakuri
 Version: 0.1-alpha
 Description: Define custom post types, taxonomies and custom fields by static YAML file
 Author: akahigeg
 Author URI: http://higelog.brassworks.jp/
-Plugin URI: https://github.com/akahigeg/post-type-note
-Text Domain: post-type-note
+Plugin URI: https://github.com/akahigeg/katakuri
+Text Domain: katakuri
 License: Apache License 2.0
 Domain Path: /languages
 */
 
-if (!array_key_exists('post-type-note', $GLOBALS)) {
-  class PostTypeNote {
+if (!array_key_exists('katakuri', $GLOBALS)) {
+  class Katakuri {
     public static function init() {
       $post_types = self::readConfig();
 
@@ -100,7 +100,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
         if (array_key_exists('custom_fields', $options)) {
           add_meta_box($post_type_name. '_meta_box', 
                        'Custom Fields', 
-                       'PostTypeNote::renderMetaBox', 
+                       'Katakuri::renderMetaBox', 
                        $post_type_name, 'normal', 'core');
         }
       }
@@ -121,8 +121,8 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
             echo '<div>';
 
-            $method_name = 'render' . PostTypeNoteUtil::pascalize($options['input']);
-            PostTypeNoteFormRenderer::$method_name($name, $saved_value, $options);
+            $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
+            KatakuriFormRenderer::$method_name($name, $saved_value, $options);
 
             echo '</div>';
           }
@@ -172,7 +172,7 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
 
       foreach ($post_types as $post_type_name => $options) {
         if (isset($options['sortable_columns'])) {
-          add_filter('manage_edit-' . $post_type_name . '_sortable_columns', 'PostTypeNote::sortableColumns');
+          add_filter('manage_edit-' . $post_type_name . '_sortable_columns', 'Katakuri::sortableColumns');
         }
       }
     }
@@ -189,30 +189,28 @@ if (!array_key_exists('post-type-note', $GLOBALS)) {
     }
 
     public static function addActions() {
-      add_action('init', 'PostTypeNote::init');
-      add_action('add_meta_boxes', 'PostTypeNote::addMetaBoxes');
-      add_action('save_post', 'PostTypeNote::saveMeta');
+      add_action('init', 'Katakuri::init');
+      add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
+      add_action('save_post', 'Katakuri::saveMeta');
 
-      add_action('manage_posts_columns', 'PostTypeNote::manageColumns');
-      add_action('manage_posts_custom_column', 'PostTypeNote::manageCustomColumns', 10, 2);
+      add_action('manage_posts_columns', 'Katakuri::manageColumns');
+      add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
     }
   }
 
   $include_path = plugin_dir_path(__FILE__) . 'includes';
-  require_once($include_path . '/PostTypeNoteFormRenderer.php');
-  require_once($include_path . '/PostTypeNoteUtil.php');
+  require_once($include_path . '/KatakuriFormRenderer.php');
+  require_once($include_path . '/KatakuriUtil.php');
 
-  $GLOBALS['post-type-note'] = new PostTypeNote();
-  PostTypeNote::addActions();
-  PostTypeNote::manageSortableColumns();
-  // add_filter('manage_edit-hoge_sortable_columns', 'PostTypeNote::hoge');
+  $GLOBALS['katakuri'] = new Katakuri();
+  Katakuri::addActions();
+  Katakuri::manageSortableColumns();
+  // add_filter('manage_edit-hoge_sortable_columns', 'Katakuri::hoge');
 }
 
 /*
 TODO: show args in admin console
 TODO: manage custom field. build forms and save input values
 TODO: comment
-TODO: add_action('save_post', save_meta_func)
-TODO: add_filter('manage_edit-<post_type>_sortable_columns', )
 TODO: add_filter('request', <order>)
 */

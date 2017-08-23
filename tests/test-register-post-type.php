@@ -2,7 +2,7 @@
 /**
  * Class RegisterPostTypeTest
  *
- * @package Post_Type_Note
+ * @package Katakuri
  */
 
 /**

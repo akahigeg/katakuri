@@ -1,5 +1,5 @@
 <?php
-  class PostTypeNoteFormRenderer {
+  class KatakuriFormRenderer {
     public static function renderText($field_name, $saved_value, $options) {
       self::renderLabel($field_name, $options);
 

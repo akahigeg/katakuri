@@ -170,9 +170,27 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
     public static function manageSortableColumns() {
       $post_types = self::readConfig();
 
+      global $wpdb;
+
       foreach ($post_types as $post_type_name => $options) {
         if (isset($options['sortable_columns'])) {
-          add_filter('manage_edit-' . $post_type_name . '_sortable_columns', 'Katakuri::sortableColumns');
+          $count_sql_base = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type='$post_type_name'";
+
+          $count_all = $wpdb->get_var($count_sql_base);
+          $count_trash = $wpdb->get_var($count_sql_base . " AND post_status = 'trash'");
+          $count_normal = $count_all - $count_trash; // for support unknown custom post status
+
+          if ($_GET['post_status'] == 'trash') {
+            $count = $count_trash;
+          } else {
+            $count = $count_normal;
+          }
+
+          if ($count > 0) {
+            // show sortable_columns when the list has non zero posts.
+            add_filter('manage_edit-' . $post_type_name . '_sortable_columns', 'Katakuri::sortableColumns');
+          }
+
         }
       }
     }
@@ -180,9 +198,13 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
     public static function sortableColumns() {
       $post_types = self::readConfig();
 
+      global $sortable_columns;
+
       $sortable = $post_types[get_post_type()]['sortable_columns'];
+      if (!empty($sortable)) {
       foreach ($sortable as $i => $column) {
         $sortable_columns[$column] = $column;
+      }
       }
 
       return $sortable_columns;

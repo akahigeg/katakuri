@@ -119,7 +119,7 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
             $input_type = isset($options['input']) ? $options['input'] : "text";
             $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
 
-            echo '<div>';
+            echo '<div style="padding:5px 0;">';
 
             $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
             KatakuriFormRenderer::$method_name($name, $saved_value, $options);
@@ -187,7 +187,7 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
           }
 
           if ($count > 0) {
-            // show sortable_columns when the list has non zero posts.
+            // show sortable_columns when the list has at least one post.
             add_filter('manage_edit-' . $post_type_name . '_sortable_columns', 'Katakuri::sortableColumns');
           }
 

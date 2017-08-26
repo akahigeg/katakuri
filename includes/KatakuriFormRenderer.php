@@ -24,7 +24,7 @@
         } else {
           $checked = '';
         }
-        echo '<label>';
+        echo '<label style="padding-right: 5px;">';
         echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $checked . '>';
         echo $option_label . '</label> ';
       }
@@ -45,7 +45,7 @@
         } else {
           $checked = '';
         }
-        echo '<label>';
+        echo '<label style="padding-right: 5px;">';
         echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
         echo $value . '</label> ';
       }
@@ -56,7 +56,7 @@
 
       $rows = isset($options['rows']) ? $options['rows'] : '5';
       $cols = isset($options['cols']) ? $options['cols'] : '40';
-      echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '">' . $saved_value . '</textarea>';
+      echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '" style="margin-top: 3px;">' . $saved_value . '</textarea>';
     }
 
     public static function renderSelect($field_name, $saved_value, $options) {
@@ -93,7 +93,7 @@
 
     public static function renderLabel($field_name, $options) {
       if (isset($options['label'])) {
-        echo '<label for="' . $field_name . '">' . $options['label'] . '</label>';
+        echo '<label for="' . $field_name . '" style="padding-right: 8px; vertical-align: middle;">' . $options['label'] . '</label>';
       }
     }
   }

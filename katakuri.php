@@ -34,6 +34,7 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
       $register_options = $options['register_options'];
       # taxonomies links a post type
       $taxonomies = array();
+
       if (array_key_exists('taxonomies', $options)) {
         $taxonomies = $options["taxonomies"];
         $taxonomy_names = array();
@@ -48,7 +49,9 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
         $register_options["taxonomies"] = $taxonomy_names;
       }
 
-      register_post_type($post_type_name, $register_options);
+      if ($post_type_name != 'post') {
+        register_post_type($post_type_name, $register_options);
+      }
 
       # register taxonomies
       self::registerTaxonomies($taxonomies, $post_type_name);

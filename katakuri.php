@@ -60,7 +60,7 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
     private static function registerTaxonomies($taxonomies, $post_type_name) {
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
         foreach ($taxonomy_name_and_args as $name => $args) {
-          if (taxonomy_exists($name)) {
+          if (!taxonomy_exists($name)) {
             register_taxonomy($name, $post_type_name, $args);
           }
         }

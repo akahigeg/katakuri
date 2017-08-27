@@ -49,7 +49,7 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
         $register_options["taxonomies"] = $taxonomy_names;
       }
 
-      if ($post_type_name != 'post') {
+      if (!post_type_exists($post_type_name)) {
         register_post_type($post_type_name, $register_options);
       }
 
@@ -60,7 +60,9 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
     private static function registerTaxonomies($taxonomies, $post_type_name) {
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
         foreach ($taxonomy_name_and_args as $name => $args) {
-          register_taxonomy($name, $post_type_name, $args);
+          if (taxonomy_exists($name)) {
+            register_taxonomy($name, $post_type_name, $args);
+          }
         }
       }
     }

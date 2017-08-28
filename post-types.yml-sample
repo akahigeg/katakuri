@@ -106,9 +106,16 @@ some_post:
   meta_boxes:
     - box1:
         label: ぼっくす
+        context: side 
         fields:
           - field1
           - field2
+    - box2:
+        label: ぼっくす2
+        context: normal
+        fields:
+          - field3
+          - field4
 another_post:
   register_options:
     labels:

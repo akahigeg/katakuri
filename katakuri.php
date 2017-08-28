@@ -103,13 +103,37 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
       $post_types = self::readConfig();
 
       foreach ($post_types as $post_type_name => $options) {
-        # support one meta box each post type now.
+        $rendered_fields = array();
+
+        if (array_key_exists('meta_boxes', $options)) {
+          foreach ($options['meta_boxes'] as $index => $meta_box) {
+            foreach ($meta_box as $name => $meta_box_options) {
+            $context = isset($meta_box_options['context']) ? $meta_box_options['context'] : '';
+            $priority = isset($meta_box_options['priority']) ? $meta_box_options['priority'] : 'default';
+
+            $include_fields = $meta_box_options['fields'];
+            add_meta_box($name . '_meta_box_options', 
+                         $meta_box_options['label'], 
+                         'Katakuri::renderMetaBox', 
+                         $post_type_name, $context, $priority, $include_fields);
+            $rendered_fields = array_merge($rendered_fields, $include_fields);
+          }
+          }
+        }
+
         if (array_key_exists('custom_fields', $options)) {
-          $callback_args = array('OK');
+          $include_fields = array();
+          foreach ($options['custom_fields'] as $index => $custom_field) {
+            foreach ($custom_field as $name => $options) {
+              if (!in_array($name, $rendered_fields)) {
+                $include_fields[] = $name;
+              }
+            }
+          }
           add_meta_box($post_type_name. '_meta_box', 
                        'Custom Fields', 
                        'Katakuri::renderMetaBox', 
-                       $post_type_name, 'normal', 'core', $callback_args);
+                       $post_type_name, 'normal', 'default', $include_fields);
         }
       }
     }
@@ -129,8 +153,12 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
       $post_types = self::readConfig();
       if (array_key_exists($post_type_name, $post_types)) {
         $custom_fields = $post_types[$post_type_name]['custom_fields'];
+        $include_fields = $args['args'];
         foreach ($custom_fields as $custom_field) {
           foreach ($custom_field as $name => $options) {
+            if (!in_array($name, $include_fields)) {
+              continue;
+            }
             $input_type = isset($options['input']) ? $options['input'] : "text";
             $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
 

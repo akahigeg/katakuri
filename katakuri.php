@@ -13,6 +13,7 @@ Domain Path: /languages
 
 if (!array_key_exists('katakuri', $GLOBALS)) {
   class Katakuri {
+
     public static function init() {
       $post_types = self::readConfig();
 
@@ -100,19 +101,28 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
 
     public static function addMetaBoxes() {
       $post_types = self::readConfig();
+
       foreach ($post_types as $post_type_name => $options) {
         # support one meta box each post type now.
         if (array_key_exists('custom_fields', $options)) {
+          $callback_args = array('OK');
           add_meta_box($post_type_name. '_meta_box', 
                        'Custom Fields', 
                        'Katakuri::renderMetaBox', 
-                       $post_type_name, 'normal', 'core');
+                       $post_type_name, 'normal', 'core', $callback_args);
         }
       }
     }
 
-    public static function renderMetaBox() {
-      global $post;
+    /**
+     * @param $args => array
+     *                 ["id"]=> string(18) "some_post_meta_box" 
+     *                 ["title"]=> string(13) "Custom Fields" 
+     *                 ["callback"]=> string(23) "Katakuri::renderMetaBox" 
+     *                 ["args"]=> array(1) { [0]=> string(2) "OK" } 
+     * 
+     */
+    public static function renderMetaBox($post, $args) {
       $post_type_name = get_post_type($post);
       $custom_field_values = get_post_custom();
 

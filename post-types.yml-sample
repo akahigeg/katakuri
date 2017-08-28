@@ -38,8 +38,6 @@ some_post:
         public: true
         show_ui: true
         label: CategoryB
-  sortable_columns:
-    - field3
   custom_fields:
     - field1:
         label: FIELD1
@@ -103,6 +101,14 @@ some_post:
           - D: D TYPE
           - E: E TYPE
           - F: F TYPE
+  sortable_columns:
+    - field3
+  meta_boxes:
+    - box1:
+        label: ぼっくす
+        fields:
+          - field1
+          - field2
 another_post:
   register_options:
     labels:

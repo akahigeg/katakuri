@@ -9,9 +9,9 @@
  * Register post type test case.
  */
 class RegisterPostTypeTest extends WP_UnitTestCase {
-	/**
-	 * some_post
-	 */
+  /**
+   * some_post
+   */
   function test_register_some_post() {
     $this->assertTrue(post_type_exists('some_post'));
   }

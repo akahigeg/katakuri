@@ -18,7 +18,7 @@ class Katakuri {
   }
 
   private static function registerPostType($post_type_name, $options) {
-    $register_options = $options['register_options'];
+    $register_options = isset($options['register_options']) ? $options['register_options'] : array();
     # taxonomies links a post type
     $taxonomies = array();
 
@@ -209,7 +209,7 @@ class Katakuri {
         $count_trash = $wpdb->get_var($count_sql_base . " AND post_status = 'trash'");
         $count_normal = $count_all - $count_trash; // for support unknown custom post status
 
-        if ($_GET['post_status'] == 'trash') {
+        if (isset($_GET['post_status']) && $_GET['post_status'] == 'trash') {
           $count = $count_trash;
         } else {
           $count = $count_normal;

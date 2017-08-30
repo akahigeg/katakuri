@@ -1,10 +1,14 @@
 <?php
 class KatakuriFormRenderer {
   public static function renderText($field_name, $saved_value, $options) {
+    echo self::buildText($field_name, $saved_value, $options);
+  }
+
+  public static function buildText($field_name, $saved_value, $options) {
     self::renderLabel($field_name, $options);
 
     $size = isset($options['size']) ? $options['size'] : '40';
-    echo '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    return '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
   }
 
   public static function renderCheckbox($field_name, $saved_value, $options) {

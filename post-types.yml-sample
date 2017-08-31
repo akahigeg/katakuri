@@ -6,15 +6,30 @@ post:
         type: text
         input: text
         size: 20
-        list_column: true
   taxonomies:
     - post_additional_tag:
         hierarchical: false
         public: true
         show_ui: true
         label: SomePostTag
+  list_columns:
+    - author:
+        label: Author
+    - field1
   sortable_columns:
     - tags
+page:
+  custom_fields:
+    - field1:
+        label: FIELD1
+        unique: true
+        type: text
+        input: text
+        size: 20
+  list_columns:
+    - author:
+        label: Author
+    - field1
 some_post:
   register_options:
     labels:
@@ -45,7 +60,6 @@ some_post:
         type: text
         input: text
         size: 20
-        list_column: true
     - field2:
         label: FIELD2
         unique: false
@@ -53,14 +67,12 @@ some_post:
         values:
           - apple
           - orange
-        list_column: false
     - field3:
         label: FIELD3
         input: checkbox
         default: 1
         values: 
           - 1: I Agree
-        list_column: true
     - field4:
         label: FIELD4
         input: radio
@@ -101,6 +113,10 @@ some_post:
           - D: D TYPE
           - E: E TYPE
           - F: F TYPE
+  list_columns:
+    - field1:
+        label: FIELD1
+    - field3
   sortable_columns:
     - field3
   meta_boxes:

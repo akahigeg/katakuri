@@ -61,12 +61,15 @@ class Katakuri {
     $post_types = self::readConfig();
     $current_post_type = get_post_type();
     if (isset($post_types[$current_post_type]) 
-        && isset($post_types[$current_post_type]['custom_fields'])) {
-      foreach ($post_types[$current_post_type]['custom_fields'] as $custom_field) {
-        foreach ($custom_field as $name => $options) {
-          if ($options['list_column']) {
-            $columns[$name] = $name;
+        && isset($post_types[$current_post_type]['list_columns'])) {
+      foreach ($post_types[$current_post_type]['list_columns'] as $field) {
+        if (is_array($field)) {
+          foreach ($field as $name => $options) {
+            $label = isset($options['label']) ? $options['label'] : $name;
+            $columns[$name] = $label;
           }
+        } else {
+          $columns[$field] = $field;
         }
       }
     }
@@ -245,5 +248,7 @@ class Katakuri {
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
+    // TODO: manage_page_columns
+    // add_action('manage_pages_columns', 'Katakuri::manageColumns');
   }
 }

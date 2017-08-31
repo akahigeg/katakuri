@@ -20,7 +20,6 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
   $GLOBALS['katakuri'] = new Katakuri();
   Katakuri::addActions();
   Katakuri::manageSortableColumns();
-  // add_filter('manage_edit-hoge_sortable_columns', 'Katakuri::hoge');
 }
 
 /*

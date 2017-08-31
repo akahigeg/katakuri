@@ -12,10 +12,12 @@ post:
         public: true
         show_ui: true
         label: SomePostTag
-  list_columns:
-    - author:
-        label: Author
-    - field1
+  columns_on_manage_screen:
+    show:
+      - field1:
+          label: F1
+    hide:
+      - author
   sortable_columns:
     - tags
 page:

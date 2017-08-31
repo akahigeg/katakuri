@@ -61,15 +61,23 @@ class Katakuri {
     $post_types = self::readConfig();
     $current_post_type = get_post_type();
     if (isset($post_types[$current_post_type]) 
-        && isset($post_types[$current_post_type]['list_columns'])) {
-      foreach ($post_types[$current_post_type]['list_columns'] as $field) {
-        if (is_array($field)) {
-          foreach ($field as $name => $options) {
-            $label = isset($options['label']) ? $options['label'] : $name;
-            $columns[$name] = $label;
+        && isset($post_types[$current_post_type]['columns_on_manage_screen'])) {
+      if (isset($post_types[$current_post_type]['columns_on_manage_screen']['show'])) {
+        foreach ($post_types[$current_post_type]['columns_on_manage_screen']['show'] as $field) {
+          if (is_array($field)) {
+            foreach ($field as $name => $options) {
+              $label = isset($options['label']) ? $options['label'] : $name;
+              $columns[$name] = $label;
+            }
+          } else {
+            $columns[$field] = $field;
           }
-        } else {
-          $columns[$field] = $field;
+        }
+      }
+
+      if (isset($post_types[$current_post_type]['columns_on_manage_screen']['hide'])) {
+        foreach ($post_types[$current_post_type]['columns_on_manage_screen']['hide'] as $field) {
+          unset($columns[$field]);
         }
       }
     }

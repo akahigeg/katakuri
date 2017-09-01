@@ -12,7 +12,14 @@ class KatakuriFormRenderer {
   }
 
   public static function renderCheckbox($field_name, $saved_value, $options) {
+    echo self::buildCheckbox($field_name, $saved_value, $options);
+  }
+
+  public static function buildCheckbox($field_name, $saved_value, $options) {
     self::renderLabel($field_name, $options);
+
+    $html = '';
+
 
     $saved_values = maybe_unserialize($saved_value);
     foreach ($options['values'] as $value) {
@@ -28,10 +35,12 @@ class KatakuriFormRenderer {
       } else {
         $checked = '';
       }
-      echo '<label style="padding-right: 5px;">';
-      echo '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $checked . '>';
-      echo $option_label . '</label> ';
+      $html .= '<label style="padding-right: 5px;">';
+      $html .= '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $checked . '>';
+      $html .= $option_label . '</label> ';
     }
+
+    return $html;
   }
 
   public static function renderRadio($field_name, $saved_value, $options) {

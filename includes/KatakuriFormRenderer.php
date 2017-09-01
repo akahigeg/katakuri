@@ -84,7 +84,11 @@ class KatakuriFormRenderer {
   }
 
   public static function renderSelect($field_name, $saved_value, $options) {
-    self::renderLabel($field_name, $options);
+    echo self::buildSelect($field_name, $saved_value, $options);
+  }
+
+  public static function buildSelect($field_name, $saved_value, $options) {
+    $html = self::buildLabel($field_name, $options);
 
     $saved_values = maybe_unserialize($saved_value);
 
@@ -92,12 +96,15 @@ class KatakuriFormRenderer {
     $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;"' : '';
     $multiple = isset($options['multiple']) && $options['multiple'] == true ? 'multiple' : '';
 
-    echo '<select name="' . $field_name . '[]" ' . $size . ' ' . $width_style . ' ' . $multiple . '>';
-    self::renderOptions($saved_values, $options);
-    echo '</select>';
+    $html .= '<select name="' . $field_name . '[]" ' . $size . ' ' . $width_style . ' ' . $multiple . '>';
+    $html .= self::buildOptions($saved_values, $options);
+    $html .= '</select>';
+
+    return $html;
   }
 
-  public static function renderOptions($saved_values, $options) {
+  public static function buildOptions($saved_values, $options) {
+    $html = '';
     foreach ($options['values'] as $value) {
       if (is_array($value)) {
         $option_value = array_keys($value)[0];
@@ -111,19 +118,15 @@ class KatakuriFormRenderer {
       } else {
         $selected = '';
       }
-      echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+      $html .= '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
     }
+
+    return $html;
   }
 
   public static function buildLabel($field_name, $options) {
     if (isset($options['label'])) {
       return '<label for="' . $field_name . '" style="padding-right: 8px; vertical-align: middle;">' . $options['label'] . '</label>';
-    }
-  }
-
-  public static function renderLabel($field_name, $options) {
-    if (isset($options['label'])) {
-      echo '<label for="' . $field_name . '" style="padding-right: 8px; vertical-align: middle;">' . $options['label'] . '</label>';
     }
   }
 }

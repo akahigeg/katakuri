@@ -70,11 +70,17 @@ class KatakuriFormRenderer {
   }
 
   public static function renderTextarea($field_name, $saved_value, $options) {
-    self::renderLabel($field_name, $options);
+    echo self::buildTextarea($field_name, $saved_value, $options);
+  }
+
+  public static function buildTextarea($field_name, $saved_value, $options) {
+    $html = self::buildLabel($field_name, $options);
 
     $rows = isset($options['rows']) ? $options['rows'] : '5';
     $cols = isset($options['cols']) ? $options['cols'] : '40';
-    echo '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '" style="margin-top: 3px;">' . $saved_value . '</textarea>';
+    $html .= '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '" style="margin-top: 3px;">' . $saved_value . '</textarea>';
+
+    return $html;
   }
 
   public static function renderSelect($field_name, $saved_value, $options) {

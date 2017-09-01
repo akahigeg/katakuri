@@ -5,10 +5,12 @@ class KatakuriFormRenderer {
   }
 
   public static function buildText($field_name, $saved_value, $options) {
-    self::renderLabel($field_name, $options);
+    $html = self::buildLabel($field_name, $options);
 
     $size = isset($options['size']) ? $options['size'] : '40';
-    return '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    $html .= '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+
+    return $html;
   }
 
   public static function renderCheckbox($field_name, $saved_value, $options) {
@@ -16,10 +18,7 @@ class KatakuriFormRenderer {
   }
 
   public static function buildCheckbox($field_name, $saved_value, $options) {
-    self::renderLabel($field_name, $options);
-
-    $html = '';
-
+    $html = self::buildLabel($field_name, $options);
 
     $saved_values = maybe_unserialize($saved_value);
     foreach ($options['values'] as $value) {
@@ -44,7 +43,11 @@ class KatakuriFormRenderer {
   }
 
   public static function renderRadio($field_name, $saved_value, $options) {
-    self::renderLabel($field_name, $options);
+    echo self::buildRadio($field_name, $saved_value, $options);
+  }
+
+  public static function buildRadio($field_name, $saved_value, $options) {
+    $html = self::buildLabel($field_name, $options);
 
     $checks = array();
     foreach ($options['values'] as $value) {
@@ -58,10 +61,12 @@ class KatakuriFormRenderer {
       } else {
         $checked = '';
       }
-      echo '<label style="padding-right: 5px;">';
-      echo '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
-      echo $value . '</label> ';
+      $html .= '<label style="padding-right: 5px;">';
+      $html .= '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
+      $html .= $value . '</label> ';
     }
+
+    return $html;
   }
 
   public static function renderTextarea($field_name, $saved_value, $options) {
@@ -101,6 +106,12 @@ class KatakuriFormRenderer {
         $selected = '';
       }
       echo '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+    }
+  }
+
+  public static function buildLabel($field_name, $options) {
+    if (isset($options['label'])) {
+      return '<label for="' . $field_name . '" style="padding-right: 8px; vertical-align: middle;">' . $options['label'] . '</label>';
     }
   }
 

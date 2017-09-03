@@ -64,19 +64,24 @@ some_post:
         type: text
         input: text
         size: 20
-    - field2:
-        label: FIELD2
+    - cb1:
+        label: CheckBox1
         unique: false
         input: checkbox
         values:
           - apple
           - orange
-    - field3:
-        label: FIELD3
+    - cb2:
+        label: CheckBox2
         input: checkbox
-        default: 1
         values: 
           - 1: I Agree
+    - cb3:
+        label: CheckBox3
+        input: checkbox
+        values:
+          - red: RED
+          - green: GREEN
     - field4:
         label: FIELD4
         input: radio

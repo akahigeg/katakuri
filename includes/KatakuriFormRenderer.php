@@ -30,12 +30,12 @@ class KatakuriFormRenderer {
         $option_label = $value;
       }
       if (is_array($saved_values) && in_array($option_value, $saved_values)) {
-        $checked = 'checked';
+        $checked = ' checked';
       } else {
         $checked = '';
       }
       $html .= '<label style="padding-right: 5px;">';
-      $html .= '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $checked . '>';
+      $html .= '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '"' . $checked . '>';
       $html .= $option_label . '</label> ';
     }
 

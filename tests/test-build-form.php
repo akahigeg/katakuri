@@ -34,4 +34,7 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $checkboxes = KatakuriFormRenderer::buildCheckbox('field1', $saved_value, $options);
     $this->assertContains('<input type="checkbox" name="field1[]" value="a">A</label>', $checkboxes);
   }
+
+  // function test_build_checkbox_with_default_check() {
+  // }
 }

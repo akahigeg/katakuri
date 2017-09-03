@@ -79,6 +79,8 @@ some_post:
     - cb3:
         label: CheckBox3
         input: checkbox
+        defaults:
+          - red
         values:
           - red: RED
           - green: GREEN

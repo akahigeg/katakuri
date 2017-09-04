@@ -56,13 +56,13 @@ class KatakuriFormRenderer {
       }
     }
     foreach ($options['values'] as $value) {
-      if ($saved_value == $value || (count($checks) == 0 && $value == $options['default'])) {
-        $checked = 'checked';
+      if ($saved_value == $value) {
+        $checked = ' checked';
       } else {
         $checked = '';
       }
       $html .= '<label style="padding-right: 5px;">';
-      $html .= '<input type="radio" name="' . $field_name . '" value="' . $value . '" ' . $checked . '>';
+      $html .= '<input type="radio" name="' . $field_name . '" value="' . $value . '"' . $checked . '>';
       $html .= $value . '</label> ';
     }
 

@@ -171,15 +171,17 @@ class Katakuri {
   }
 
   public static function saveMeta($post_id) {
-    $post_type_name = get_post_type($post_id);
+    $current_post_type = get_post_type($post_id);
 
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
       return;
     }
 
     $post_types = self::readConfig();
-    if (array_key_exists($post_type_name, $post_types) && isset($post_types[$post_type_name]['custom_fields'])) {
-      $custom_fields = $post_types[$post_type_name]['custom_fields'];
+
+    if (array_key_exists($current_post_type, $post_types) 
+        && isset($post_types[$current_post_type]['custom_fields'])) {
+      $custom_fields = $post_types[$current_post_type]['custom_fields'];
       foreach ($custom_fields as $custom_field) {
         foreach ($custom_field as $name => $options) {
           $input_type = isset($options['input']) ? $options['input'] : "text";
@@ -201,6 +203,22 @@ class Katakuri {
               }
               break;
             default:
+          }
+        }
+      }
+    }
+  }
+
+  public static function setCustomFieldsDefault($post_id) {
+    $current_post_type = get_post_type($post_id);
+    $post_types = self::readConfig();
+
+    if (array_key_exists($current_post_type, $post_types) 
+        && isset($post_types[$current_post_type]['custom_fields'])) {
+      foreach ($post_types[$current_post_type]['custom_fields'] as $custom_field) {
+        foreach ($custom_field as $name => $options) {
+          if (isset($options['default'])) {
+            add_post_meta($post_id, $name, $options['default']);
           }
         }
       }
@@ -253,10 +271,10 @@ class Katakuri {
     add_action('init', 'Katakuri::init');
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
     add_action('save_post', 'Katakuri::saveMeta');
+    add_action('wp_insert_post','Katakuri::setCustomFieldsDefault');
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
-    // TODO: add_action('wp_insert_post','set_default_meta');
     // TODO: manage_page_columns
     // add_action('manage_pages_columns', 'Katakuri::manageColumns');
   }

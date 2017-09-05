@@ -79,7 +79,7 @@ some_post:
     - cb3:
         label: CheckBox3
         input: checkbox
-        defaults:
+        default:
           - red
         values:
           - red: RED
@@ -97,6 +97,7 @@ some_post:
         input: textarea
         rows: 8
         cols: 60
+        default: "DEFAULT5!"
     - field6:
         label: FIELD6
         input: select

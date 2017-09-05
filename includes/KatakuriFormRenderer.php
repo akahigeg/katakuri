@@ -113,7 +113,7 @@ class KatakuriFormRenderer {
         $option_value = $value;
         $option_label = $value;
       }
-      if (in_array($option_value, $saved_values)) {
+      if (is_array($saved_values) && in_array($option_value, $saved_values)) {
         $selected = 'selected';
       } else {
         $selected = '';

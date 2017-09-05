@@ -171,15 +171,17 @@ class Katakuri {
   }
 
   public static function saveMeta($post_id) {
-    $post_type_name = get_post_type($post_id);
+    $current_post_type = get_post_type($post_id);
 
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
       return;
     }
 
     $post_types = self::readConfig();
-    if (array_key_exists($post_type_name, $post_types) && isset($post_types[$post_type_name]['custom_fields'])) {
-      $custom_fields = $post_types[$post_type_name]['custom_fields'];
+
+    if (array_key_exists($current_post_type, $post_types) 
+        && isset($post_types[$current_post_type]['custom_fields'])) {
+      $custom_fields = $post_types[$current_post_type]['custom_fields'];
       foreach ($custom_fields as $custom_field) {
         foreach ($custom_field as $name => $options) {
           $input_type = isset($options['input']) ? $options['input'] : "text";
@@ -189,13 +191,30 @@ class Katakuri {
             case 'textarea':
             case 'radio':
               if (isset($_POST[$name])) {
-                update_post_meta($post_id, $name, sanitize_text_field($_POST[$name]));
+                update_post_meta($post_id, $name, $_POST[$name]);
+              } else {
+                // $_POST is not exist 
+                //   * new post is opened 
+                //   * some plugins do something 
+                if (isset($options['default'])) {
+                  add_post_meta($post_id, $name, $options['default'], true);
+                }
               }
               break;
             case 'checkbox':
             case 'select':
               if (isset($_POST[$name])) {
                 update_post_meta($post_id, $name, $_POST[$name]);
+                continue;
+              }
+
+              // $_POST is not exist 
+              //   * new post is opened 
+              //   * nothing was selected on the form
+              //   * some plugins do something 
+              $v = get_post_meta($post_id, $name, true);
+              if ($v == '' && isset($options['default'])) { // 
+                add_post_meta($post_id, $name, $options['default']);
               } else {
                 update_post_meta($post_id, $name, array());
               }
@@ -256,7 +275,6 @@ class Katakuri {
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
-    // TODO: add_action('wp_insert_post','set_default_meta');
     // TODO: manage_page_columns
     // add_action('manage_pages_columns', 'Katakuri::manageColumns');
   }

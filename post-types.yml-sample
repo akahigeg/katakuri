@@ -84,14 +84,21 @@ some_post:
         values:
           - red: RED
           - green: GREEN
-    - field4:
-        label: FIELD4
+    - radio1:
+        label: Radio1
         input: radio
-        default: cat
         values:
           - cat
           - dog
           - monkey
+    - radio2:
+        label: Radio2
+        input: radio
+        default: fish
+        values:
+          - bird
+          - fish
+          - snake
     - field5:
         label: FIELD5
         input: textarea
@@ -101,6 +108,8 @@ some_post:
     - field6:
         label: FIELD6
         input: select
+        default:
+          - B
         values:
           - A
           - B
@@ -118,6 +127,9 @@ some_post:
         size: 6
         width: 80
         multiple: true
+        default:
+          - B
+          - C
         values:
           - A: A TYPE
           - B: B TYPE
@@ -138,13 +150,12 @@ some_post:
         context: side 
         fields:
           - field1
-          - field2
     - box2:
         label: ぼっくす2
         context: normal
         fields:
-          - field3
-          - field4
+          - radio1
+          - radio2
 another_post:
   register_options:
     labels:

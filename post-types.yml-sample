@@ -99,6 +99,13 @@ some_post:
           - bird
           - fish
           - snake
+    - radio3:
+        label: Radio3
+        input: radio
+        default: B
+        values:
+          - A: Ape
+          - B: Bird
     - field5:
         label: FIELD5
         input: textarea
@@ -156,6 +163,7 @@ some_post:
         fields:
           - radio1
           - radio2
+          - radio3
 another_post:
   register_options:
     labels:

@@ -14,6 +14,11 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $this->assertEquals('<input name="field1" type="text" value="saved!" size="40">', $text_field);
   }
 
+  function test_build_textarea() {
+    $text_field = KatakuriFormRenderer::buildTextarea('field1', 'saved!', array());
+    $this->assertEquals('<textarea name="field1" rows="5" cols="40">saved!</textarea>', $text_field);
+  }
+
   function test_build_text_with_size() {
     $text_field = KatakuriFormRenderer::buildText('field1', 'saved!', array('size' => 50));
     $this->assertEquals('<input name="field1" type="text" value="saved!" size="50">', $text_field);
@@ -34,9 +39,6 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $checkboxes = KatakuriFormRenderer::buildCheckbox('field1', $saved_value, $options);
     $this->assertContains('<input type="checkbox" name="field1[]" value="a">A</label>', $checkboxes);
   }
-
-  // function test_build_checkbox_with_default_check() {
-  // }
 
   function test_build_radio() {
     $saved_value = 'B';

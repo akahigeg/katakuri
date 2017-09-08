@@ -159,7 +159,7 @@ class Katakuri {
           $input_type = isset($options['input']) ? $options['input'] : "text";
           $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
 
-          echo '<div style="padding:5px 0;">';
+          echo '<div class="katakuri-meta-box">';
 
           $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
           KatakuriFormRenderer::$method_name($name, $saved_value, $options);
@@ -268,6 +268,10 @@ class Katakuri {
     return $sortable_columns;
   }
 
+  public static function enqueueStyle() {
+    wp_enqueue_style('katakuri-style' , plugins_url('../katakuri.css', __FILE__));
+  }
+
   public static function addActions() {
     add_action('init', 'Katakuri::init');
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
@@ -275,6 +279,8 @@ class Katakuri {
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
+
+    add_action('admin_enqueue_scripts', 'Katakuri::enqueueStyle');
     // TODO: manage_page_columns
     // add_action('manage_pages_columns', 'Katakuri::manageColumns');
   }

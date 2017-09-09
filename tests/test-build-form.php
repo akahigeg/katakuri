@@ -57,4 +57,14 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $this->assertContains('<input type="radio" name="field1" value="b" checked>B', $radios);
     $this->assertContains('<input type="radio" name="field1" value="c">C', $radios);
   }
+
+  function test_build_select() {
+    $saved_value = array('B');
+    $options = array('values' => array('A', 'B', 'C'));
+    $select = KatakuriFormRenderer::buildSelect('field1', $saved_value, $options);
+    $this->assertContains('<select name="field1[]"', $select);
+    $this->assertContains('<option value="A">', $select);
+    $this->assertContains('<option value="B" selected>', $select);
+    $this->assertContains('<option value="C">', $select);
+  }
 }

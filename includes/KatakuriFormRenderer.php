@@ -116,11 +116,11 @@ class KatakuriFormRenderer {
         $option_label = $value;
       }
       if (is_array($saved_values) && in_array($option_value, $saved_values)) {
-        $selected = 'selected';
+        $selected = ' selected';
       } else {
         $selected = '';
       }
-      $html .= '<option value="' . $option_value . '" ' . $selected . '>' . $option_label . '</option>';
+      $html .= '<option value="' . $option_value . '"' . $selected . '>' . $option_label . '</option>';
     }
 
     return $html;

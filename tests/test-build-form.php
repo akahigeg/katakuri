@@ -66,5 +66,16 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $this->assertContains('<option value="A">', $select);
     $this->assertContains('<option value="B" selected>', $select);
     $this->assertContains('<option value="C">', $select);
+    $this->assertContains('</select>', $select);
+  }
+
+
+  function test_build_select_with_option_label() {
+    $saved_value = array('b');
+    $options = array('values' => array(array('a' => 'A'), array('b' => 'B'), array('c' => 'C')));
+    $select = KatakuriFormRenderer::buildSelect('field1', $saved_value, $options);
+    $this->assertContains('<option value="a">A', $select);
+    $this->assertContains('<option value="b" selected>B', $select);
+    $this->assertContains('<option value="c">C', $select);
   }
 }

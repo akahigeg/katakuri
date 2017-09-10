@@ -94,11 +94,11 @@ class KatakuriFormRenderer {
 
     $saved_values = maybe_unserialize($saved_value);
 
-    $size = isset($options['size']) ? 'size="' . $options['size'] . '"' : '';
-    $width_style = isset($options['width']) ? 'style="width:' . $options['width'] . 'px;"' : '';
-    $multiple = isset($options['multiple']) && $options['multiple'] == true ? 'multiple' : '';
+    $size = isset($options['size']) ? ' size="' . $options['size'] . '"' : '';
+    $width_style = isset($options['width']) ? ' style="width:' . $options['width'] . 'px;"' : '';
+    $multiple = isset($options['multiple']) && $options['multiple'] == true ? ' multiple' : '';
 
-    $html .= '<select name="' . $field_name . '[]" ' . $size . ' ' . $width_style . ' ' . $multiple . '>';
+    $html .= '<select name="' . $field_name . '[]"' . $size . $width_style . $multiple . '>';
     $html .= self::buildOptions($saved_values, $options);
     $html .= '</select>';
 

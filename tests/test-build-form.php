@@ -69,7 +69,6 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $this->assertContains('</select>', $select);
   }
 
-
   function test_build_select_with_option_label() {
     $saved_value = array('b');
     $options = array('values' => array(array('a' => 'A'), array('b' => 'B'), array('c' => 'C')));
@@ -78,4 +77,15 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $this->assertContains('<option value="b" selected>B', $select);
     $this->assertContains('<option value="c">C', $select);
   }
+
+  function test_build_select_with_style() {
+    $saved_value = array('B');
+    $options = array('values' => array('A', 'B', 'C'),
+                     'width' => 10, 'size' => 3);
+    $select = KatakuriFormRenderer::buildSelect('field1', $saved_value, $options);
+    $this->assertContains('<select name="field1[]" size="3" style="width:10px;"', $select);
+  }
+
+  // style width
+  // size
 }

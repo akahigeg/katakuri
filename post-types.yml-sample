@@ -3,7 +3,6 @@ post:
     - field1:
         label: FIELD1
         unique: true
-        type: text
         input: text
         size: 20
   taxonomies:
@@ -25,7 +24,6 @@ page:
     - field1:
         label: FIELD1
         unique: true
-        type: text
         input: text
         size: 20
   columns_on_manage_screen:
@@ -61,7 +59,6 @@ some_post:
     - field1:
         label: FIELD1
         unique: true
-        type: text
         input: text
         size: 20
     - cb1:

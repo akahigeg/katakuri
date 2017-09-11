@@ -85,14 +85,10 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $this->assertContains('<select name="field1[]" size="3" style="width:10px;"', $select);
   }
 
-
   function test_build_multipl_select() {
     $options = array('values' => array('A', 'B', 'C'),
                      'width' => 10, 'size' => 3, 'multiple' => true);
     $select = KatakuriFormRenderer::buildSelect('field1', '', $options);
     $this->assertContains('<select name="field1[]" size="3" style="width:10px;" multiple', $select);
   }
-
-  // style width
-  // size
 }

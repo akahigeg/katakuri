@@ -7,18 +7,22 @@ post:
     - field1:
         label: FIELD1
         unique: true
-        type: text
         input: text
         size: 20
-        list_column: true
-    - field2:
-        label: FIELD2
-        unique: false
-        input: checkbox
-        values:
-          - apple
-          - orange
-        list_column: false
+  taxonomies:
+    - post_additional_tag:
+        hierarchical: false
+        public: true
+        show_ui: true
+        label: SomePostTag
+  columns_on_manage_screen:
+    show:
+      - field1:
+          label: F1
+    hide:
+      - author
+  sortable_columns:
+    - tags
 
 ### Taxsonomy
 
@@ -30,4 +34,3 @@ post:
         show_ui: true
         label: SomePostTag
 
-### 

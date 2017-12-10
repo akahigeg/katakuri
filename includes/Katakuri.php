@@ -10,10 +10,23 @@ class Katakuri {
   }
 
   public static function readConfig() {
-    $yaml_path = ABSPATH . '/post-types.yml';
-    if (!file_exists($yaml_path)) {
+    $yaml_path_on_theme = get_stylesheet_directory() . '/post-types.yml';
+    $yaml_path_on_root = ABSPATH . '/post-types.yml';
+
+    $yaml_path = '';
+
+    if (file_exists($yaml_path_on_theme)) {
+      $yaml_path = $yaml_path_on_theme;
+    }
+
+    if (empty($yaml_path) && file_exists($yaml_path_on_root)) {
+      $yaml_path = $yaml_path_on_root;
+    }
+
+    if (empty($yaml_path)) {
       $yaml_path = plugin_dir_path(__FILE__) . '/../post-types.yml-sample';
     }
+
     return yaml_parse_file($yaml_path);
   }
 

@@ -8,13 +8,6 @@ UNDER CONSTRACTION.
 * Show columns on a manage screen
 * Create sortable columns on a manage screen
 
-<details>
-  <summary>hoge</summary>
-```rb
-a = 'hoge'
-```
-</details>
-
 ### Add custom post types
 
 ```yml 
@@ -74,6 +67,54 @@ some_post:
             unique: true
             input: text
             size: 20
+
+
+<details>
+  <summary>Text</summary>
+  <pre>
+- field1:
+    label: FIELD1
+    unique: true
+    input: text
+    size: 20</pre>
+* hoge 
+</details>
+<details>
+  <summary>Radio</summary>
+  <pre>
+- field1:
+    label: FIELD1
+    unique: true
+    input: text
+    size: 20</pre>
+</details>
+<details>
+  <summary>CheckBox</summary>
+  <pre>
+- field1:
+    label: FIELD1
+    unique: true
+    input: text
+    size: 20</pre>
+</details>
+<details>
+  <summary>Textarea</summary>
+  <pre>
+- field1:
+    label: FIELD1
+    unique: true
+    input: text
+    size: 20</pre>
+</details>
+<details>
+  <summary>Select</summary>
+  <pre>
+- field1:
+    label: FIELD1
+    unique: true
+    input: text
+    size: 20</pre>
+</details>
 
 ### Add taxonomies
 

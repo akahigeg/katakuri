@@ -109,6 +109,9 @@ class Katakuri {
     }
   }
 
+  /**
+   *  
+   */
   public static function addMetaBoxes() {
     $post_types = self::readConfig();
 
@@ -126,6 +129,8 @@ class Katakuri {
                        $meta_box_options['label'], 
                        'Katakuri::renderMetaBox', 
                        $post_type_name, $context, $priority, $include_fields);
+
+            # avoid double rendering
             $rendered_fields = array_merge($rendered_fields, $include_fields);
           }
         }
@@ -140,10 +145,13 @@ class Katakuri {
             }
           }
         }
-        add_meta_box($post_type_name. '_meta_box', 
-                     'Custom Fields', 
-                     'Katakuri::renderMetaBox', 
-                     $post_type_name, 'normal', 'default', $include_fields);
+
+        if (count($include_fields) > 0) {
+          add_meta_box($post_type_name. '_meta_box', 
+                       'Custom Fields', 
+                       'Katakuri::renderMetaBox', 
+                       $post_type_name, 'normal', 'default', $include_fields);
+        }
       }
     }
   }

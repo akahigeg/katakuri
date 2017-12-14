@@ -250,22 +250,81 @@ class Katakuri {
   /**
    *
    */
-  public static function addCategoryMetaBoxes($current_taxonomy_name) {
+  public static function addTaxonomyMetaBoxForEdit($term) {
+    self::renderTaxonomyMetaBox($term->taxonomy, $term);
+  }
+
+  public static function addTaxonomyMetaBoxForAdd($current_taxonomy_name) {
+    self::renderTaxonomyMetaBox($current_taxonomy_name);
+  }
+
+  public static function renderTaxonomyMetaBox($current_taxonomy_name, $term = null) {
     $taxonomy_config = self::readTaxonomyConfig($current_taxonomy_name);
 
-    # $taxonomy = get_taxonomy($current_taxonomy_name);
-
-    # too deep nest...
     foreach ($taxonomy_config as $name => $options) {
       if (isset($options['custom_fields'])) {
-        foreach ($options['custom_fields'] as $i => $field_options) {
-          foreach ($field_options as $name => $f_options) {
-            $saved_value = '';
-            $method_name = 'render' . KatakuriUtil::pascalize($f_options['input']);
-            KatakuriFormRenderer::$method_name($name, $saved_value, $f_options);
+        foreach ($options['custom_fields'] as $i => $custom_field) {
+          foreach ($custom_field as $name => $field_options) {
+            if (empty($term)) {
+              $saved_value = '';
+            } else {
+              $saved_value = get_term_meta($term->term_id, $name, true);
+            }
+            $method_name = 'render' . KatakuriUtil::pascalize($field_options['input']);
+            KatakuriFormRenderer::$method_name($name, $saved_value, $field_options);
           }
         }
         echo "<hr>";
+      }
+    }
+  }
+
+  public static function saveTermMeta($term_id) {
+    $term = get_term($term_id);
+    $taxonomy_config = self::readTaxonomyConfig($term->taxonomy);
+
+    foreach ($taxonomy_config as $name => $taxonomy_options) {
+      if (isset($taxonomy_options['custom_fields'])) {
+        foreach ($taxonomy_options['custom_fields'] as $i => $custom_field) {
+          foreach ($custom_field as $name => $options) {
+            $input_type = isset($options['input']) ? $options['input'] : "text";
+          switch ($options['input']) {
+            case 'text':
+            case 'textarea':
+            case 'radio':
+              if (isset($_POST[$name])) {
+                update_term_meta($term_id, $name, $_POST[$name]);
+              } else {
+                // $_POST is not exist 
+                //   * new post is opened 
+                //   * some plugins do something 
+                if (isset($options['default'])) {
+                  add_term_meta($term_id, $name, $options['default'], true);
+                }
+              }
+              break;
+            case 'checkbox':
+            case 'select':
+              if (isset($_POST[$name])) {
+                update_term_meta($term_id, $name, $_POST[$name]);
+                continue;
+              }
+
+              // $_POST is not exist 
+              //   * new post is opened 
+              //   * nothing was selected on the form
+              //   * some plugins do something 
+              $v = get_term_meta($term_id, $name, true);
+              if ($v == '' && isset($options['default'])) { // 
+                add_term_meta($term_id, $name, $options['default']);
+              } else {
+                update_term_meta($term_id, $name, array());
+              }
+              break;
+            default:
+          }
+          }
+        }
       }
     }
   }
@@ -337,8 +396,11 @@ class Katakuri {
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
     add_action('save_post', 'Katakuri::saveMeta');
 
-    add_action('some_post_cat_add_form_fields', 'Katakuri::addCategoryMetaBoxes');
-    # add_action('some_post_cat_edit_form_fields', 'Katakuri::addCategoryMetaBoxes');
+    add_action('some_post_cat_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
+    add_action('some_post_cat_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+
+    add_action ('created_term', 'Katakuri::saveTermMeta');
+    add_action ('edited_term', 'Katakuri::saveTermMeta');
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);

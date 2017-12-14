@@ -247,6 +247,45 @@ class Katakuri {
     }
   }
 
+  /**
+   *
+   */
+  public static function addCategoryMetaBoxes($current_taxonomy_name) {
+    $taxonomy_config = self::readTaxonomyConfig($current_taxonomy_name);
+
+    # $taxonomy = get_taxonomy($current_taxonomy_name);
+
+    # too deep nest...
+    foreach ($taxonomy_config as $name => $options) {
+      if (isset($options['custom_fields'])) {
+        foreach ($options['custom_fields'] as $i => $field_options) {
+          foreach ($field_options as $name => $f_options) {
+            $saved_value = '';
+            $method_name = 'render' . KatakuriUtil::pascalize($f_options['input']);
+            KatakuriFormRenderer::$method_name($name, $saved_value, $f_options);
+          }
+        }
+        echo "<hr>";
+      }
+    }
+  }
+
+  public static function readTaxonomyConfig($taxonomy_name) {
+    $post_types = self::readConfig();
+
+    foreach ($post_types as $post_type_name => $post_type_options) {
+      if (array_key_exists('taxonomies', $post_type_options)) {
+        foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
+          foreach ($taxonomy_config as $name => $options) {
+            if ($name == $taxonomy_name) {
+              return $taxonomy_config;
+            }
+          }
+        }
+      }
+    }
+  }
+
   public static function manageSortableColumns() {
     $post_types = self::readConfig();
 
@@ -297,6 +336,9 @@ class Katakuri {
     add_action('init', 'Katakuri::init');
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
     add_action('save_post', 'Katakuri::saveMeta');
+
+    add_action('some_post_cat_add_form_fields', 'Katakuri::addCategoryMetaBoxes');
+    # add_action('some_post_cat_edit_form_fields', 'Katakuri::addCategoryMetaBoxes');
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);

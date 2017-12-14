@@ -50,6 +50,12 @@ some_post:
         public: true
         show_ui: true
         label: CategoryA
+        custom_fields:
+          - field1:
+              label: FIELD1
+              unique: true
+              input: text
+              size: 20
     - some_post_cat_second:
         hierarchical: true
         public: true

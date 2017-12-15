@@ -109,6 +109,9 @@ class Katakuri {
     }
   }
 
+  /**
+   *  
+   */
   public static function addMetaBoxes() {
     $post_types = self::readConfig();
 
@@ -126,6 +129,8 @@ class Katakuri {
                        $meta_box_options['label'], 
                        'Katakuri::renderMetaBox', 
                        $post_type_name, $context, $priority, $include_fields);
+
+            # avoid double rendering
             $rendered_fields = array_merge($rendered_fields, $include_fields);
           }
         }
@@ -140,10 +145,13 @@ class Katakuri {
             }
           }
         }
-        add_meta_box($post_type_name. '_meta_box', 
-                     'Custom Fields', 
-                     'Katakuri::renderMetaBox', 
-                     $post_type_name, 'normal', 'default', $include_fields);
+
+        if (count($include_fields) > 0) {
+          add_meta_box($post_type_name. '_meta_box', 
+                       'Custom Fields', 
+                       'Katakuri::renderMetaBox', 
+                       $post_type_name, 'normal', 'default', $include_fields);
+        }
       }
     }
   }
@@ -197,49 +205,125 @@ class Katakuri {
       $custom_fields = $post_types[$current_post_type]['custom_fields'];
       foreach ($custom_fields as $custom_field) {
         foreach ($custom_field as $name => $options) {
-          $input_type = isset($options['input']) ? $options['input'] : "text";
+          self::saveMetaByFieldType($post_id, $name, $options);
+        }
+      }
+    }
+  }
 
-          switch ($options['input']) {
-            case 'text':
-            case 'textarea':
-            case 'radio':
-              if (isset($_POST[$name])) {
-                update_post_meta($post_id, $name, $_POST[$name]);
-              } else {
-                // $_POST is not exist 
-                //   * new post is opened 
-                //   * some plugins do something 
-                if (isset($options['default'])) {
-                  add_post_meta($post_id, $name, $options['default'], true);
-                }
-              }
-              break;
-            case 'checkbox':
-            case 'select':
-              if (isset($_POST[$name])) {
-                update_post_meta($post_id, $name, $_POST[$name]);
-                continue;
-              }
+  /**
+   *
+   */
+  public static function addTaxonomyMetaBoxForEdit($term) {
+    self::renderTaxonomyMetaBox($term->taxonomy, $term);
+  }
 
-              // $_POST is not exist 
-              //   * new post is opened 
-              //   * nothing was selected on the form
-              //   * some plugins do something 
-              $v = get_post_meta($post_id, $name, true);
-              if ($v == '' && isset($options['default'])) { // 
-                add_post_meta($post_id, $name, $options['default']);
-              } else {
-                update_post_meta($post_id, $name, array());
-              }
-              break;
-            default:
+  public static function addTaxonomyMetaBoxForAdd($current_taxonomy_name) {
+    self::renderTaxonomyMetaBox($current_taxonomy_name);
+  }
+
+  public static function renderTaxonomyMetaBox($current_taxonomy_name, $term = null) {
+    $taxonomy_config = self::readTaxonomyConfig($current_taxonomy_name);
+
+    foreach ($taxonomy_config as $name => $options) {
+      if (isset($options['custom_fields'])) {
+        foreach ($options['custom_fields'] as $i => $custom_field) {
+          foreach ($custom_field as $name => $field_options) {
+            if (empty($term)) {
+              $saved_value = '';
+            } else {
+              $saved_value = get_term_meta($term->term_id, $name, true);
+            }
+            $method_name = 'render' . KatakuriUtil::pascalize($field_options['input']);
+            KatakuriFormRenderer::$method_name($name, $saved_value, $field_options);
+          }
+        }
+        echo "<hr>";
+      }
+    }
+  }
+
+  public static function saveMetaByFieldType($item_id, $field_name, $options, $item_type = 'post') {
+    if ($item_type == 'post') { 
+      // include custom post type
+      $add_meta_funciton = 'add_post_meta';
+      $update_meta_function = 'update_post_meta';
+    } else {
+      // taxonomy
+      $add_meta_funciton = 'add_term_meta';
+      $update_meta_function = 'update_term_meta';
+    }
+
+    switch ($options['input']) {
+      case 'text':
+      case 'textarea':
+      case 'radio':
+      case 'image':
+        if (isset($_POST[$field_name])) {
+          $update_meta_function($item_id, $field_name, $_POST[$field_name]);
+        } else {
+          // $_POST is not exist 
+          //   * new post is opened 
+          //   * some plugins do something 
+          if (isset($options['default'])) {
+            $add_meta_function($item_id, $field_name, $options['default'], true);
+          }
+        }
+        break;
+      case 'checkbox':
+      case 'select':
+        if (isset($_POST[$field_name])) {
+          $update_meta_function($item_id, $field_name, $_POST[$field_name]);
+          continue;
+        }
+
+        // $_POST is not exist 
+        //   * new post is opened 
+        //   * nothing was selected on the form
+        //   * some plugins do something 
+        $v = get_term_meta($item_id, $field_name, true);
+        if ($v == '' && isset($options['default'])) { // 
+          $add_meta_function($item_id, $field_name, $options['default']);
+        } else {
+          $update_meta_function($item_id, $field_name, array());
+        }
+        break;
+      default:
+    }
+  }
+
+  public static function saveTermMeta($term_id) {
+    $term = get_term($term_id);
+    $taxonomy_config = self::readTaxonomyConfig($term->taxonomy);
+
+    foreach ($taxonomy_config as $name => $taxonomy_options) {
+      if (isset($taxonomy_options['custom_fields'])) {
+        foreach ($taxonomy_options['custom_fields'] as $i => $custom_field) {
+          foreach ($custom_field as $name => $options) {
+            self::saveMetaByFieldType($term_id, $name, $options, 'taxonomy');
           }
         }
       }
     }
   }
 
-  public static function manageSortableColumns() {
+  public static function readTaxonomyConfig($taxonomy_name) {
+    $post_types = self::readConfig();
+
+    foreach ($post_types as $post_type_name => $post_type_options) {
+      if (array_key_exists('taxonomies', $post_type_options)) {
+        foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
+          foreach ($taxonomy_config as $name => $options) {
+            if ($name == $taxonomy_name) {
+              return $taxonomy_config;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public static function enableSortableColumns() {
     $post_types = self::readConfig();
 
     global $wpdb;
@@ -281,8 +365,28 @@ class Katakuri {
     return $sortable_columns;
   }
 
+  public static function enableTaxonomyCustomFields() {
+    $post_types = self::readConfig();
+
+    foreach ($post_types as $post_type_name => $post_type_options) {
+      if (array_key_exists('taxonomies', $post_type_options)) {
+        foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
+          foreach ($taxonomy_config as $name => $options) {
+            if (array_key_exists('custom_fields', $options)) {
+              add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
+              add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+            }
+          }
+        }
+      }
+    }
+  }
+
   public static function enqueueStyle() {
     wp_enqueue_style('katakuri-style' , plugins_url('../katakuri.css', __FILE__));
+  }
+  public static function enqueueScript() {
+    wp_enqueue_media();
   }
 
   public static function addActions() {
@@ -290,10 +394,16 @@ class Katakuri {
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
     add_action('save_post', 'Katakuri::saveMeta');
 
+    // TODO: testing for taxonomy custom field and uploading image
+
+    add_action ('created_term', 'Katakuri::saveTermMeta');
+    add_action ('edited_term', 'Katakuri::saveTermMeta');
+
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
 
     add_action('admin_enqueue_scripts', 'Katakuri::enqueueStyle');
+    add_action('admin_enqueue_scripts', 'Katakuri::enqueueScript');
     // TODO: manage_page_columns
     // add_action('manage_pages_columns', 'Katakuri::manageColumns');
   }

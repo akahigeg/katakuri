@@ -19,7 +19,8 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
 
   $GLOBALS['katakuri'] = new Katakuri();
   Katakuri::addActions();
-  Katakuri::manageSortableColumns();
+  Katakuri::enableSortableColumns();
+  Katakuri::enableTaxonomyCustomFields();
 }
 
 /*

@@ -155,6 +155,16 @@ some_post:
           - D: D TYPE
           - E: E TYPE
           - F: F TYPE
+    - image1:
+        label: IMAGE1
+        unique: true
+        input: image
+        size: 40
+    - image2:
+        label: IMAGE2
+        unique: true
+        input: image
+        size: 40
   columns_on_manage_screen:
     show:
       - field1:

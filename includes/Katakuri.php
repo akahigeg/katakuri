@@ -211,6 +211,7 @@ class Katakuri {
             case 'text':
             case 'textarea':
             case 'radio':
+            case 'image':
               if (isset($_POST[$name])) {
                 update_post_meta($post_id, $name, $_POST[$name]);
               } else {
@@ -407,6 +408,10 @@ class Katakuri {
   public static function enqueueStyle() {
     wp_enqueue_style('katakuri-style' , plugins_url('../katakuri.css', __FILE__));
   }
+  public static function enqueueScript() {
+    wp_enqueue_media();
+    wp_enqueue_script('katakuri-js' , plugins_url('../katakuri.js', __FILE__));
+  }
 
   public static function addActions() {
     add_action('init', 'Katakuri::init');
@@ -423,6 +428,7 @@ class Katakuri {
     add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
 
     add_action('admin_enqueue_scripts', 'Katakuri::enqueueStyle');
+    add_action('admin_enqueue_scripts', 'Katakuri::enqueueScript');
     // TODO: manage_page_columns
     // add_action('manage_pages_columns', 'Katakuri::manageColumns');
   }

@@ -205,44 +205,7 @@ class Katakuri {
       $custom_fields = $post_types[$current_post_type]['custom_fields'];
       foreach ($custom_fields as $custom_field) {
         foreach ($custom_field as $name => $options) {
-          $input_type = isset($options['input']) ? $options['input'] : "text";
-
-          switch ($options['input']) {
-            case 'text':
-            case 'textarea':
-            case 'radio':
-            case 'image':
-              if (isset($_POST[$name])) {
-                update_post_meta($post_id, $name, $_POST[$name]);
-              } else {
-                // $_POST is not exist 
-                //   * new post is opened 
-                //   * some plugins do something 
-                if (isset($options['default'])) {
-                  add_post_meta($post_id, $name, $options['default'], true);
-                }
-              }
-              break;
-            case 'checkbox':
-            case 'select':
-              if (isset($_POST[$name])) {
-                update_post_meta($post_id, $name, $_POST[$name]);
-                continue;
-              }
-
-              // $_POST is not exist 
-              //   * new post is opened 
-              //   * nothing was selected on the form
-              //   * some plugins do something 
-              $v = get_post_meta($post_id, $name, true);
-              if ($v == '' && isset($options['default'])) { // 
-                add_post_meta($post_id, $name, $options['default']);
-              } else {
-                update_post_meta($post_id, $name, array());
-              }
-              break;
-            default:
-          }
+          self::saveMetaByFieldType($post_id, $name, $options);
         }
       }
     }
@@ -280,6 +243,55 @@ class Katakuri {
     }
   }
 
+  public static function saveMetaByFieldType($item_id, $field_name, $options, $item_type = 'post') {
+    if ($item_type == 'post') { 
+      // include custom post type
+      $add_meta_funciton = 'add_post_meta';
+      $update_meta_function = 'update_post_meta';
+    } else {
+      // taxonomy
+      $add_meta_funciton = 'add_term_meta';
+      $update_meta_function = 'update_term_meta';
+    }
+
+    switch ($options['input']) {
+      case 'text':
+      case 'textarea':
+      case 'radio':
+      case 'image':
+        if (isset($_POST[$field_name])) {
+          $update_meta_function($item_id, $field_name, $_POST[$field_name]);
+        } else {
+          // $_POST is not exist 
+          //   * new post is opened 
+          //   * some plugins do something 
+          if (isset($options['default'])) {
+            $add_meta_function($item_id, $field_name, $options['default'], true);
+          }
+        }
+        break;
+      case 'checkbox':
+      case 'select':
+        if (isset($_POST[$field_name])) {
+          $update_meta_function($item_id, $field_name, $_POST[$field_name]);
+          continue;
+        }
+
+        // $_POST is not exist 
+        //   * new post is opened 
+        //   * nothing was selected on the form
+        //   * some plugins do something 
+        $v = get_term_meta($item_id, $field_name, true);
+        if ($v == '' && isset($options['default'])) { // 
+          $add_meta_function($item_id, $field_name, $options['default']);
+        } else {
+          $update_meta_function($item_id, $field_name, array());
+        }
+        break;
+      default:
+    }
+  }
+
   public static function saveTermMeta($term_id) {
     $term = get_term($term_id);
     $taxonomy_config = self::readTaxonomyConfig($term->taxonomy);
@@ -288,42 +300,7 @@ class Katakuri {
       if (isset($taxonomy_options['custom_fields'])) {
         foreach ($taxonomy_options['custom_fields'] as $i => $custom_field) {
           foreach ($custom_field as $name => $options) {
-            $input_type = isset($options['input']) ? $options['input'] : "text";
-          switch ($options['input']) {
-            case 'text':
-            case 'textarea':
-            case 'radio':
-              if (isset($_POST[$name])) {
-                update_term_meta($term_id, $name, $_POST[$name]);
-              } else {
-                // $_POST is not exist 
-                //   * new post is opened 
-                //   * some plugins do something 
-                if (isset($options['default'])) {
-                  add_term_meta($term_id, $name, $options['default'], true);
-                }
-              }
-              break;
-            case 'checkbox':
-            case 'select':
-              if (isset($_POST[$name])) {
-                update_term_meta($term_id, $name, $_POST[$name]);
-                continue;
-              }
-
-              // $_POST is not exist 
-              //   * new post is opened 
-              //   * nothing was selected on the form
-              //   * some plugins do something 
-              $v = get_term_meta($term_id, $name, true);
-              if ($v == '' && isset($options['default'])) { // 
-                add_term_meta($term_id, $name, $options['default']);
-              } else {
-                update_term_meta($term_id, $name, array());
-              }
-              break;
-            default:
-          }
+            self::saveMetaByFieldType($term_id, $name, $options, 'taxonomy');
           }
         }
       }
@@ -410,7 +387,6 @@ class Katakuri {
   }
   public static function enqueueScript() {
     wp_enqueue_media();
-    wp_enqueue_script('katakuri-js' , plugins_url('../katakuri.js', __FILE__));
   }
 
   public static function addActions() {
@@ -418,8 +394,7 @@ class Katakuri {
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
     add_action('save_post', 'Katakuri::saveMeta');
 
-    // TODO: upload image 
-    // TODO: testing
+    // TODO: testing for taxonomy custom field and uploading image
 
     add_action ('created_term', 'Katakuri::saveTermMeta');
     add_action ('edited_term', 'Katakuri::saveTermMeta');

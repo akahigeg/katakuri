@@ -61,6 +61,14 @@ some_post:
         public: true
         show_ui: true
         label: CategoryB
+        custom_fields:
+          - radio1:
+              label: Radio1
+              input: radio
+              values:
+                - cat
+                - dog
+                - monkey
   custom_fields:
     - field1:
         label: FIELD1

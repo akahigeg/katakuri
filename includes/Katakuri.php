@@ -345,7 +345,7 @@ class Katakuri {
     }
   }
 
-  public static function manageSortableColumns() {
+  public static function enableSortableColumns() {
     $post_types = self::readConfig();
 
     global $wpdb;
@@ -387,6 +387,23 @@ class Katakuri {
     return $sortable_columns;
   }
 
+  public static function enableTaxonomyCustomFields() {
+    $post_types = self::readConfig();
+
+    foreach ($post_types as $post_type_name => $post_type_options) {
+      if (array_key_exists('taxonomies', $post_type_options)) {
+        foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
+          foreach ($taxonomy_config as $name => $options) {
+            if (array_key_exists('custom_fields', $options)) {
+              add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
+              add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+            }
+          }
+        }
+      }
+    }
+  }
+
   public static function enqueueStyle() {
     wp_enqueue_style('katakuri-style' , plugins_url('../katakuri.css', __FILE__));
   }
@@ -396,8 +413,8 @@ class Katakuri {
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
     add_action('save_post', 'Katakuri::saveMeta');
 
-    add_action('some_post_cat_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
-    add_action('some_post_cat_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+    // TODO: upload image 
+    // TODO: testing
 
     add_action ('created_term', 'Katakuri::saveTermMeta');
     add_action ('edited_term', 'Katakuri::saveTermMeta');

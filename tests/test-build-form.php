@@ -91,4 +91,9 @@ class KatakuriFormRendererTest extends WP_UnitTestCase {
     $select = KatakuriFormRenderer::buildSelect('field1', '', $options);
     $this->assertContains('<select name="field1[]" size="3" style="width:10px;" multiple', $select);
   }
+
+  function test_build_image() {
+    $image_field = KatakuriFormRenderer::buildImage('field1', '15', array());
+    $this->assertContains('<input type="hidden" id="field1-image" name="field1" class="custom_media_url" value="15">', $image_field);
+  }
 }

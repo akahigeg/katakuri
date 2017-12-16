@@ -1,7 +1,7 @@
 <?php
 class KatakuriFormRenderer {
   public static function renderText($field_name, $saved_value, $options) {
-    echo self::buildText($field_name, $saved_value, $options);
+    echo $options['before'] . self::buildText($field_name, $saved_value, $options) . $options['after'];
   }
 
   public static function buildText($field_name, $saved_value, $options) {

@@ -166,6 +166,8 @@ some_post:
         unique: true
         input: image
         size: 40
+        before: "<hr>"
+        after: "<hr>"
     - image2:
         label: IMAGE2
         unique: true

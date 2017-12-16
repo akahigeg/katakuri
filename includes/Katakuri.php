@@ -181,10 +181,12 @@ class Katakuri {
           $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
 
           echo '<div class="katakuri-meta-box">';
+          echo $options['before'];
 
           $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
           KatakuriFormRenderer::$method_name($name, $saved_value, $options);
 
+          echo $options['after'];
           echo '</div>';
         }
       }
@@ -234,11 +236,15 @@ class Katakuri {
             } else {
               $saved_value = get_term_meta($term->term_id, $name, true);
             }
+            echo '<div class="form-field term-' . $name . '-wrap">';
             $method_name = 'render' . KatakuriUtil::pascalize($field_options['input']);
             KatakuriFormRenderer::$method_name($name, $saved_value, $field_options);
+            if (isset($field_options['description'])) {
+              echo '<p>' . $field_options['description'] . '</p>';
+            }
+            echo '</div>';
           }
         }
-        echo "<hr>";
       }
     }
   }

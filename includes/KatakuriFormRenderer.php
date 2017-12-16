@@ -20,12 +20,11 @@ class KatakuriFormRenderer {
   public static function buildImage($field_name, $saved_value, $options) {
     $html = self::buildLabel($field_name, $options);
 
-    $size = isset($options['size']) ? $options['size'] : '40';
     $html .= '<input type="hidden" id="' . $field_name . '-image" name="' . $field_name . '" class="custom_media_url" value="' . $saved_value . '">';
     if ($saved_value == '') {
       $html .= '<div id="' . $field_name . '-image-wrapper"></div>';
     } else {
-      $html .= '<div id="' . $field_name . '-image-wrapper">' . wp_get_attachment_image ( $saved_value, 'thumbnail' ) . '</div>';
+      $html .= '<div id="' . $field_name . '-image-wrapper">' . wp_get_attachment_image($saved_value, 'large') . '</div>';
     }
     $html .= '<p>
        <input type="button" class="button button-secondary ' . $field_name . '-media-button" id="' . $field_name . '-media-button" name="media-button" value="Add" />
@@ -53,7 +52,7 @@ class KatakuriFormRenderer {
            wp.media.editor.send.attachment = function(props, attachment){
              if ( _custom_media ) {
                $('#{$field_name}-image').val(attachment.id);
-               $('#{$field_name}-image-wrapper').html('<img class="custom_media_image" src="" style="margin:0;padding:0;max-height:100px;float:none;" />');
+               $('#{$field_name}-image-wrapper').html('<img class="custom_media_image" src="" style="margin:0;padding:0;max-height:150px;float:none;" />');
                $('#{$field_name}-image-wrapper .custom_media_image').attr('src',attachment.url).css('display','block');
              } else {
                return _orig_send_attachment.apply( button_id, [props, attachment] );

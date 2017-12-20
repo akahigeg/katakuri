@@ -252,11 +252,11 @@ class Katakuri {
   public static function saveMetaByFieldType($item_id, $field_name, $options, $item_type = 'post') {
     if ($item_type == 'post') { 
       // include custom post type
-      $add_meta_funciton = 'add_post_meta';
+      $add_meta_function = 'add_post_meta';
       $update_meta_function = 'update_post_meta';
     } else {
       // taxonomy
-      $add_meta_funciton = 'add_term_meta';
+      $add_meta_function = 'add_term_meta';
       $update_meta_function = 'update_term_meta';
     }
 

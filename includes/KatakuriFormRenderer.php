@@ -209,7 +209,7 @@ EOM;
       return $html;
     }
 
-    // select, radio, checkbox
+    // select
     $values = array();
     foreach ($relation_posts as $post) {
       $values[$post->ID] = $post->post_title;
@@ -221,10 +221,13 @@ EOM;
     return $html;
   }
 
+  public static function rewriteReference() {
+
+  }
+
   public static function buildLabel($field_name, $options) {
     if (isset($options['label'])) {
       return '<label for="' . $field_name . '" style="padding-right: 8px; vertical-align: middle;">' . $options['label'] . '</label>';
     }
   }
 }
-

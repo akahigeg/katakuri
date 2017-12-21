@@ -55,6 +55,11 @@ class Katakuri {
 
     # register taxonomies
     self::registerTaxonomies($taxonomies, $post_type_name);
+
+    # 
+    // if ($options['input'] == 'reference') {
+    //   add_action('wp_ajax_rewrite_' . $post_type_name, );
+    // }
   }
 
   private static function registerTaxonomies($taxonomies, $post_type_name) {
@@ -396,6 +401,24 @@ class Katakuri {
     wp_enqueue_media();
   }
 
+  public static function ajax() {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(array('status' => 'OK'));
+    die();
+  }
+
+  public static function script() {
+    wp_register_script(
+        'katakuri',
+        dirname( __FILE__ ) . '/js/update_reference.js',
+        array('jquery'),
+        false,
+        true
+    );
+ 
+    wp_enqueue_script('katakuri_update_reference', plugins_url('../js/update_reference.js', __FILE__));
+  }
+
   public static function addActions() {
     add_action('init', 'Katakuri::init');
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
@@ -413,5 +436,8 @@ class Katakuri {
     add_action('admin_enqueue_scripts', 'Katakuri::enqueueScript');
     // TODO: manage_page_columns
     // add_action('manage_pages_columns', 'Katakuri::manageColumns');
+
+    add_action('wp_ajax_katakuri', 'Katakuri::ajax');
+    add_action('admin_enqueue_scripts', 'Katakuri::script');
   }
 }

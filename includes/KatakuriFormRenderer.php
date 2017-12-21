@@ -198,6 +198,29 @@ EOM;
     return $html;
   }
 
+  public static function renderReference($field_name, $saved_value, $options) {
+    echo self::buildReference($field_name, $saved_value, $options);
+  }
+
+  public static function buildReference($field_name, $saved_value, $options) {
+    $relation_posts = get_posts($options['reference_query_options']);
+    if (empty($relation_posts)) {
+      $html .= 'nothing to select';
+      return $html;
+    }
+
+    // select, radio, checkbox
+    $values = array();
+    foreach ($relation_posts as $post) {
+      $values[$post->ID] = $post->post_title;
+    }
+    $options['values'] = $values;
+
+    $html .= self::buildSelect($field_name, $saved_value, $options);
+
+    return $html;
+  }
+
   public static function buildLabel($field_name, $options) {
     if (isset($options['label'])) {
       return '<label for="' . $field_name . '" style="padding-right: 8px; vertical-align: middle;">' . $options['label'] . '</label>';

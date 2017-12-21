@@ -265,6 +265,7 @@ class Katakuri {
       case 'textarea':
       case 'radio':
       case 'image':
+      case 'reference':
         if (isset($_POST[$field_name])) {
           $update_meta_function($item_id, $field_name, $_POST[$field_name]);
         } else {

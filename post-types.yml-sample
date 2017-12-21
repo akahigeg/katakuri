@@ -76,6 +76,13 @@ some_post:
                 - dog
                 - monkey
   custom_fields:
+    - reference1:
+        label: ANOTHER POST
+        input: reference
+        reference_query_options: 
+          post_type: another_post
+          orderby: date
+          order: asc
     - field1:
         label: FIELD1
         unique: true

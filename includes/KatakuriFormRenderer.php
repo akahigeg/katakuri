@@ -212,7 +212,7 @@ EOM;
     // select
     $values = array();
     foreach ($relation_posts as $post) {
-      $values[$post->ID] = $post->post_title;
+      array_push($values, array($post->ID => $post->post_title));
     }
     $options['values'] = $values;
 

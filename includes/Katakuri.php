@@ -186,12 +186,16 @@ class Katakuri {
           $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
 
           echo '<div class="katakuri-meta-box">';
-          echo $options['before'];
+          if (isset($options['before'])) {
+            echo $options['before'];
+          }
 
           $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
           KatakuriFormRenderer::$method_name($name, $saved_value, $options);
 
-          echo $options['after'];
+          if (isset($options['after'])) {
+            echo $options['after'];
+          }
           echo '</div>';
         }
       }

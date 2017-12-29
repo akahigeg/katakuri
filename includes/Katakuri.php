@@ -77,7 +77,7 @@ class Katakuri {
     unset($columns['date']);
 
     $post_types = self::readConfig();
-    $current_post_type = get_post_type();
+    $current_post_type = get_query_var('post_type');
     if (isset($post_types[$current_post_type]) 
         && isset($post_types[$current_post_type]['columns_on_manage_screen'])) {
       if (isset($post_types[$current_post_type]['columns_on_manage_screen']['show'])) {
@@ -106,10 +106,11 @@ class Katakuri {
   }
 
   public static function manageCustomColumns($column_name, $post_id) {
-    $saved_value = get_post_meta($post_id, $column_name, true);
-    if (empty($saved_value)) {
-      // challenge show taxonomy
+    var_dump($post_id);
+    if (preg_match('/_category$/', $column_name)) {
       $saved_value = get_the_term_list($post_id, $column_name);
+    } else {
+      $saved_value = get_post_meta($post_id, $column_name, true);
     }
     if (is_array($saved_value)) {
       echo implode($saved_value, ',');

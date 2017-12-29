@@ -106,7 +106,6 @@ class Katakuri {
   }
 
   public static function manageCustomColumns($column_name, $post_id) {
-    var_dump($post_id);
     if (preg_match('/_category$/', $column_name)) {
       $saved_value = get_the_term_list($post_id, $column_name);
     } else {

@@ -107,6 +107,10 @@ class Katakuri {
 
   public static function manageCustomColumns($column_name, $post_id) {
     $saved_value = get_post_meta($post_id, $column_name, true);
+    if (empty($saved_value)) {
+      // challenge show taxonomy
+      $saved_value = get_the_term_list($post_id, $column_name);
+    }
     if (is_array($saved_value)) {
       echo implode($saved_value, ',');
     } else {

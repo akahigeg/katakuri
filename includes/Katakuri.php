@@ -127,7 +127,7 @@ class Katakuri {
       } elseif ($post_type == 'page') {
         $hook_name = 'manage_pages_custom_column';
       } else {
-        $hook_name = 'manage_' . $current_post_type . '_posts_custom_column';
+        $hook_name = 'manage_' . $post_type . '_posts_custom_column';
       }
       add_action($hook_name, 'Katakuri::manageCustomColumns', 10, 2);
     }

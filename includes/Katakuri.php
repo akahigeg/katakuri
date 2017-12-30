@@ -107,7 +107,7 @@ class Katakuri {
 
   public static function manageCustomColumns($column_name, $post_id) {
     if (preg_match('/_category$/', $column_name)) {
-      $saved_value = get_the_term_list($post_id, $column_name);
+      $saved_value = get_the_term_list($post_id, $column_name, '', ', ');
     } else {
       $saved_value = get_post_meta($post_id, $column_name, true);
     }
@@ -115,6 +115,21 @@ class Katakuri {
       echo implode($saved_value, ',');
     } else {
       echo $saved_value;
+    }
+  }
+
+  public static function enableManageCustomColumns() {
+    $post_types = self::readConfig();
+
+    foreach ($post_types as $post_type => $options) {
+      if ($post_type == 'post') {
+        $hook_name = 'manage_posts_custom_column';
+      } elseif ($post_type == 'page') {
+        $hook_name = 'manage_pages_custom_column';
+      } else {
+        $hook_name = 'manage_' . $current_post_type . '_posts_custom_column';
+      }
+      add_action($hook_name, 'Katakuri::manageCustomColumns', 10, 2);
     }
   }
 
@@ -438,12 +453,11 @@ class Katakuri {
     add_action ('edited_term', 'Katakuri::saveTermMeta');
 
     add_action('manage_posts_columns', 'Katakuri::manageColumns');
-    add_action('manage_posts_custom_column', 'Katakuri::manageCustomColumns', 10, 2);
+    add_action('manage_pages_columns', 'Katakuri::manageColumns');
+    self::enableManageCustomColumns();
 
     add_action('admin_enqueue_scripts', 'Katakuri::enqueueStyle');
     add_action('admin_enqueue_scripts', 'Katakuri::enqueueScript');
-    // TODO: manage_page_columns
-    // add_action('manage_pages_columns', 'Katakuri::manageColumns');
 
     add_action('wp_ajax_katakuri', 'Katakuri::ajax');
     add_action('admin_enqueue_scripts', 'Katakuri::script');

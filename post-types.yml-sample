@@ -45,7 +45,7 @@ some_post:
         public: true
         show_ui: true
         label: SomePostTag
-    - some_post_cat:
+    - some_post_category:
         hierarchical: true
         public: true
         show_ui: true
@@ -184,7 +184,8 @@ some_post:
     show:
       - field1:
           label: FIELD1
-      - field3
+      - some_post_category:
+          label: SPCat
   sortable_columns:
     - field3
   meta_boxes:

@@ -72,6 +72,11 @@ class Katakuri {
     }
   }
 
+  /**
+   *  
+   *  manage columns section
+   *  
+   */
   public static function manageColumns($columns) {
     $date_escape = $columns['date'];
     unset($columns['date']);
@@ -141,6 +146,8 @@ class Katakuri {
   }
 
   /**
+   *  
+   *  add meta boxes section
    *  
    */
   public static function addMetaBoxes() {
@@ -228,6 +235,11 @@ class Katakuri {
     }
   }
 
+  /**
+   *  
+   *  save meta boxes section
+   *  
+   */
   public static function saveMeta($post_id) {
     $current_post_type = get_post_type($post_id);
 
@@ -243,42 +255,6 @@ class Katakuri {
       foreach ($custom_fields as $custom_field) {
         foreach ($custom_field as $name => $options) {
           self::saveMetaByFieldType($post_id, $name, $options);
-        }
-      }
-    }
-  }
-
-  /**
-   *
-   */
-  public static function addTaxonomyMetaBoxForEdit($term) {
-    self::renderTaxonomyMetaBox($term->taxonomy, $term);
-  }
-
-  public static function addTaxonomyMetaBoxForAdd($current_taxonomy_name) {
-    self::renderTaxonomyMetaBox($current_taxonomy_name);
-  }
-
-  public static function renderTaxonomyMetaBox($current_taxonomy_name, $term = null) {
-    $taxonomy_config = self::readTaxonomyConfig($current_taxonomy_name);
-
-    foreach ($taxonomy_config as $name => $options) {
-      if (isset($options['custom_fields'])) {
-        foreach ($options['custom_fields'] as $i => $custom_field) {
-          foreach ($custom_field as $name => $field_options) {
-            if (empty($term)) {
-              $saved_value = '';
-            } else {
-              $saved_value = get_term_meta($term->term_id, $name, true);
-            }
-            echo '<div class="form-field term-' . $name . '-wrap">';
-            $method_name = 'render' . KatakuriUtil::pascalize($field_options['input']);
-            KatakuriFormRenderer::$method_name($name, $saved_value, $field_options);
-            if (isset($field_options['description'])) {
-              echo '<p>' . $field_options['description'] . '</p>';
-            }
-            echo '</div>';
-          }
         }
       }
     }
@@ -349,6 +325,44 @@ class Katakuri {
     }
   }
 
+  /**
+   *  
+   *  add taxonomy meta boxes section
+   *  
+   */
+  public static function addTaxonomyMetaBoxForEdit($term) {
+    self::renderTaxonomyMetaBox($term->taxonomy, $term);
+  }
+
+  public static function addTaxonomyMetaBoxForAdd($current_taxonomy_name) {
+    self::renderTaxonomyMetaBox($current_taxonomy_name);
+  }
+
+  public static function renderTaxonomyMetaBox($current_taxonomy_name, $term = null) {
+    $taxonomy_config = self::readTaxonomyConfig($current_taxonomy_name);
+
+    foreach ($taxonomy_config as $name => $options) {
+      if (isset($options['custom_fields'])) {
+        foreach ($options['custom_fields'] as $i => $custom_field) {
+          foreach ($custom_field as $name => $field_options) {
+            if (empty($term)) {
+              $saved_value = '';
+            } else {
+              $saved_value = get_term_meta($term->term_id, $name, true);
+            }
+            echo '<div class="form-field term-' . $name . '-wrap">';
+            $method_name = 'render' . KatakuriUtil::pascalize($field_options['input']);
+            KatakuriFormRenderer::$method_name($name, $saved_value, $field_options);
+            if (isset($field_options['description'])) {
+              echo '<p>' . $field_options['description'] . '</p>';
+            }
+            echo '</div>';
+          }
+        }
+      }
+    }
+  }
+
   public static function readTaxonomyConfig($taxonomy_name) {
     $post_types = self::readConfig();
 
@@ -365,6 +379,11 @@ class Katakuri {
     }
   }
 
+  /**
+   *  
+   *  manage sortable columns
+   *  
+   */
   public static function enableSortableColumns() {
     $post_types = self::readConfig();
 
@@ -406,24 +425,11 @@ class Katakuri {
 
     return $sortable_columns;
   }
-
-  public static function enableTaxonomyCustomFields() {
-    $post_types = self::readConfig();
-
-    foreach ($post_types as $post_type_name => $post_type_options) {
-      if (array_key_exists('taxonomies', $post_type_options)) {
-        foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
-          foreach ($taxonomy_config as $name => $options) {
-            if (array_key_exists('custom_fields', $options)) {
-              add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
-              add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
-            }
-          }
-        }
-      }
-    }
-  }
-
+  /**
+   *  
+   *  enqueue scripts
+   *  
+   */
   public static function enqueueStyle() {
     wp_enqueue_style('katakuri-style' , plugins_url('../katakuri.css', __FILE__));
   }
@@ -449,6 +455,11 @@ class Katakuri {
     wp_enqueue_script('katakuri_update_reference', plugins_url('../js/update_reference.js', __FILE__));
   }
 
+  /**
+   *  
+   *  add actions
+   *  
+   */
   public static function addActions() {
     add_action('init', 'Katakuri::init');
     add_action('add_meta_boxes', 'Katakuri::addMetaBoxes');
@@ -469,4 +480,22 @@ class Katakuri {
     add_action('wp_ajax_katakuri', 'Katakuri::ajax');
     add_action('admin_enqueue_scripts', 'Katakuri::script');
   }
+
+  public static function enableTaxonomyCustomFields() {
+    $post_types = self::readConfig();
+
+    foreach ($post_types as $post_type_name => $post_type_options) {
+      if (array_key_exists('taxonomies', $post_type_options)) {
+        foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
+          foreach ($taxonomy_config as $name => $options) {
+            if (array_key_exists('custom_fields', $options)) {
+              add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
+              add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+            }
+          }
+        }
+      }
+    }
+  }
+
 }

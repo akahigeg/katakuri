@@ -174,6 +174,7 @@ class Katakuri {
         }
       }
 
+      // default custom fields meta box. include all custom fields except in $rendered_fields(already rendered).
       if (array_key_exists('custom_fields', $options)) {
         $include_fields = array();
         foreach ($options['custom_fields'] as $index => $custom_field) {

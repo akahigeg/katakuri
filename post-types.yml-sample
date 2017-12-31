@@ -79,6 +79,7 @@ some_post:
     - reference1:
         label: ANOTHER POST
         input: reference
+        multiple: true
         reference_query_options: 
           post_type: another_post
           orderby: date

@@ -263,23 +263,24 @@ class Katakuri {
   public static function saveMetaByFieldType($item_id, $field_name, $options, $item_type = 'post') {
     if ($item_type == 'post') { 
       // include custom post type
+      $get_meta_funciton = 'get_post_meta';
       $add_meta_function = 'add_post_meta';
       $update_meta_function = 'update_post_meta';
     } else {
       // taxonomy
+      $get_meta_funciton = 'get_term_meta';
       $add_meta_function = 'add_term_meta';
       $update_meta_function = 'update_term_meta';
     }
 
-    switch ($options['input']) {
-      case 'text':
-      case 'textarea':
-      case 'radio':
-      case 'image':
+    $saved_value_type = self::analyzeSavedValueType($options);
+
+    switch ($saved_value_type) {
+      case 'single':
         if (isset($_POST[$field_name])) {
           $update_meta_function($item_id, $field_name, $_POST[$field_name]);
         } else {
-          // $_POST is not exist 
+          // when $_POST is not exist 
           //   * new post is opened 
           //   * some plugins do something 
           if (isset($options['default'])) {
@@ -287,19 +288,17 @@ class Katakuri {
           }
         }
         break;
-      case 'checkbox':
-      case 'select':
-      case 'reference':
+      case 'multiple':
         if (isset($_POST[$field_name])) {
           $update_meta_function($item_id, $field_name, $_POST[$field_name]);
           continue;
         }
 
-        // $_POST is not exist 
+        // when $_POST is not exist 
         //   * new post is opened 
         //   * nothing was selected on the form
         //   * some plugins do something 
-        $v = get_term_meta($item_id, $field_name, true);
+        $v = $get_meta_funciton($item_id, $field_name, true);
         if ($v == '' && isset($options['default'])) { // 
           $add_meta_function($item_id, $field_name, $options['default']);
         } else {
@@ -308,6 +307,28 @@ class Katakuri {
         break;
       default:
     }
+  }
+
+  private static function analyzeSavedValueType($options) {
+    if (isset($options['multiple']) && $options['multiple'] == true) {
+      $saved_value_type = 'multiple';
+    } else {
+      switch ($options['input']) {
+        case 'checkbox':
+        case 'select':
+        case 'reference':
+          $saved_value_type = 'multiple';
+          break;
+        case 'text':
+        case 'textarea':
+        case 'radio':
+        case 'image':
+        default:
+          $saved_value_type = 'single';
+      }
+    }
+
+    return $saved_value_type;
   }
 
   public static function saveTermMeta($term_id) {

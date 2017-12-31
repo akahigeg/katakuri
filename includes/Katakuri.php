@@ -106,6 +106,13 @@ class Katakuri {
   }
 
   public static function manageCustomColumns($column_name, $post_id) {
+    // avoid double output on 'manage_posts_custom_column' and 'manage_%post_type%_posts_custom_column'
+    global $previous_managed; 
+    if (isset($previous_managed) && $previous_managed == array($column_name, $post_id)) {
+      return;
+    }
+    $previous_managed = array($column_name, $post_id);
+
     if (preg_match('/_category$/', $column_name)) {
       $saved_value = get_the_term_list($post_id, $column_name, '', ', ');
     } else {
@@ -209,13 +216,8 @@ class Katakuri {
             echo $options['before'];
           }
 
-          $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
-          if ($options['input'] == 'text') {
-            $class_name = 'KatakuriFormRenderer' . KatakuriUtil::pascalize($options['input']);
-            $class_name::render($name, $saved_value, $options);
-          } else {
-            KatakuriFormRenderer::$method_name($name, $saved_value, $options);
-          }
+          $class_name = 'KatakuriFormRenderer' . KatakuriUtil::pascalize($options['input']);
+          $class_name::render($name, $saved_value, $options);
 
           if (isset($options['after'])) {
             echo $options['after'];

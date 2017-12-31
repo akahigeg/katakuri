@@ -210,7 +210,12 @@ class Katakuri {
           }
 
           $method_name = 'render' . KatakuriUtil::pascalize($options['input']);
-          KatakuriFormRenderer::$method_name($name, $saved_value, $options);
+          if ($options['input'] == 'text') {
+            $class_name = 'KatakuriFormRenderer' . KatakuriUtil::pascalize($options['input']);
+            $class_name::render($name, $saved_value, $options);
+          } else {
+            KatakuriFormRenderer::$method_name($name, $saved_value, $options);
+          }
 
           if (isset($options['after'])) {
             echo $options['after'];

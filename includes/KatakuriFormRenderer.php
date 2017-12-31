@@ -216,7 +216,7 @@ EOM;
     }
     $options['values'] = $values;
 
-    $html .= self::buildSelect($field_name, $saved_value, $options);
+    $html = self::buildSelect($field_name, $saved_value, $options);
 
     return $html;
   }

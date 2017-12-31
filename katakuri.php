@@ -17,6 +17,14 @@ if (!array_key_exists('katakuri', $GLOBALS)) {
   require_once($include_path . '/KatakuriFormRenderer.php');
   require_once($include_path . '/KatakuriUtil.php');
 
+foreach (scandir($include_path . '/KatakuriFormRenderer') as $filename) {
+    $path = $include_path . '/KatakuriFormRenderer' . '/' . $filename;
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
+
+
   $GLOBALS['katakuri'] = new Katakuri();
   Katakuri::addActions();
   Katakuri::enableSortableColumns();

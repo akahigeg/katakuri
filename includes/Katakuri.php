@@ -39,11 +39,15 @@ class Katakuri {
       $taxonomies = $options["taxonomies"];
       $taxonomy_names = array();
       foreach ($taxonomies as $i => $taxonomy_name_and_args) {
+        if (is_array($taxonomy_name_and_args)) {
+          foreach ($taxonomy_name_and_args as $name => $args) {
+            $taxonomy_names[] = $name;
+          }
+        } else {
+          $taxonomy_names[] = $taxonomy_name_and_args;
+        }
         # $taxonomy_name_and_args example.
         #   {'some_post_tag' => $args}
-        foreach ($taxonomy_name_and_args as $name => $args) {
-          $taxonomy_names[] = $name;
-        }
       }
       # $options["taxonomies"] in only taxxonomy names for regsiter_post_type
       $register_options["taxonomies"] = $taxonomy_names;
@@ -64,9 +68,11 @@ class Katakuri {
 
   private static function registerTaxonomies($taxonomies, $post_type_name) {
     foreach ($taxonomies as $i => $taxonomy_name_and_args) {
-      foreach ($taxonomy_name_and_args as $name => $args) {
-        if (!taxonomy_exists($name)) {
-          register_taxonomy($name, $post_type_name, $args);
+      if (is_array($taxonomy_name_and_args)) {
+        foreach ($taxonomy_name_and_args as $name => $args) {
+          if (!taxonomy_exists($name)) {
+            register_taxonomy($name, $post_type_name, $args);
+          }
         }
       }
     }
@@ -511,10 +517,12 @@ class Katakuri {
     foreach ($post_types as $post_type_name => $post_type_options) {
       if (array_key_exists('taxonomies', $post_type_options)) {
         foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
-          foreach ($taxonomy_config as $name => $options) {
-            if (array_key_exists('custom_fields', $options)) {
-              add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
-              add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+          if (is_array($taxonomy_config)) {
+            foreach ($taxonomy_config as $name => $options) {
+              if (array_key_exists('custom_fields', $options)) {
+                add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
+                add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
+              }
             }
           }
         }

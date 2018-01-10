@@ -399,9 +399,11 @@ class Katakuri {
     foreach ($post_types as $post_type_name => $post_type_options) {
       if (array_key_exists('taxonomies', $post_type_options)) {
         foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
-          foreach ($taxonomy_config as $name => $options) {
-            if ($name == $taxonomy_name) {
-              return $taxonomy_config;
+          if (is_array($taxonomy_config)) {
+            foreach ($taxonomy_config as $name => $options) {
+              if ($name == $taxonomy_name) {
+                return $taxonomy_config;
+              }
             }
           }
         }

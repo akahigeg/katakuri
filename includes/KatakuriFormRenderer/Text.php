@@ -8,7 +8,8 @@ class KatakuriFormRendererText {
     $html = KatakuriFormRendererLabel::build($field_name, $options);
 
     $size = isset($options['size']) ? $options['size'] : '40';
-    $html .= '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '">';
+    $placeholder = isset($options['placeholder']) ? $options['placeholder'] : '';
+    $html .= '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '" placeholder="' . $placeholder . '">';
 
     return $html;
   }

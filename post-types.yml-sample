@@ -89,6 +89,7 @@ some_post:
         unique: true
         input: text
         size: 20
+        placeholder: input your field1
     - cb1:
         label: CheckBox1
         unique: false

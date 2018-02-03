@@ -11,12 +11,17 @@
 class KatakuriFormRendererTest extends WP_UnitTestCase {
   function test_build_text() {
     $text_field = KatakuriFormRendererText::build('field1', 'saved!', array());
-    $this->assertEquals('<input name="field1" type="text" value="saved!" size="40">', $text_field);
+    $this->assertEquals('<input name="field1" type="text" value="saved!" size="40" placeholder="">', $text_field);
   }
 
   function test_build_text_with_size() {
     $text_field = KatakuriFormRendererText::build('field1', 'saved!', array('size' => 50));
-    $this->assertEquals('<input name="field1" type="text" value="saved!" size="50">', $text_field);
+    $this->assertEquals('<input name="field1" type="text" value="saved!" size="50" placeholder="">', $text_field);
+  }
+
+  function test_build_text_with_placeholder() {
+    $text_field = KatakuriFormRendererText::build('field1', 'saved!', array('placeholder' => 'input your field1'));
+    $this->assertEquals('<input name="field1" type="text" value="saved!" size="40" placeholder="input your field1">', $text_field);
   }
 
   function test_build_textarea() {

@@ -285,7 +285,16 @@ class Katakuri {
     switch ($saved_value_type) {
       case 'single':
         if (isset($_POST[$field_name])) {
-          $update_meta_function($item_id, $field_name, $_POST[$field_name]);
+          if (is_array($_POST[$field_name])) {
+            if (isset($_POST[$field_name][0])) {
+              $field_value = $_POST[$field_name][0];
+            } else {
+              $field_value = '';
+            }
+          } else {
+            $field_value = $_POST[$field_name];
+          }
+          $update_meta_function($item_id, $field_name, $field_value);
         } else {
           // when $_POST is not exist 
           //   * new post is opened 
@@ -317,25 +326,28 @@ class Katakuri {
   }
 
   private static function analyzeSavedValueType($options) {
+    // specified
     if (isset($options['multiple']) && $options['multiple'] == true) {
-      $saved_value_type = 'multiple';
-    } else {
-      switch ($options['input']) {
-        case 'checkbox':
-        case 'select':
-        case 'reference':
-          $saved_value_type = 'multiple';
-          break;
-        case 'text':
-        case 'textarea':
-        case 'radio':
-        case 'image':
-        default:
-          $saved_value_type = 'single';
-      }
+      return 'multiple';
+    }
+    if (isset($options['single']) && $options['single'] == true) {
+      return 'single';
     }
 
-    return $saved_value_type;
+    // auto analyze by input type
+    switch ($options['input']) {
+      case 'checkbox':
+      case 'select':
+      case 'reference':
+        return 'multiple';
+        break;
+      case 'text':
+      case 'textarea':
+      case 'radio':
+      case 'image':
+      default:
+        return 'single';
+    }
   }
 
   public static function saveTermMeta($term_id) {

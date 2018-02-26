@@ -6,6 +6,7 @@ class KatakuriFormRendererReference {
 
   public static function build($field_name, $saved_value, $options) {
     $relation_posts = get_posts($options['reference_query_options']);
+    $html = '';
     if (empty($relation_posts)) {
       $html .= 'nothing to select';
       return $html;

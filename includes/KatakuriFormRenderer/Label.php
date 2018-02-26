@@ -9,14 +9,8 @@ class KatakuriFormRendererLabel {
       return;
     }
 
-    $attrs = array();
-    if (isset($options['label_class'])) {
-      $attrs[] = 'class="' . $options['label_class'] . '"';
-    }
-    if (isset($options['label_style'])) {
-      $attrs[] = 'style="' . $options['label_style'] . '"';
-    }
+    $style_and_class = KatakuriFormRendererHelperStyleAndClass::forLabel($options);
 
-    return '<label for="' . $field_name . '" ' . implode(' ', $attrs) . '>' . $options['label'] . '</label>';
+    return '<label for="' . $field_name . '" ' . $style_and_class . '>' . $options['label'] . '</label>';
   }
 }

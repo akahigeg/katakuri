@@ -4,3 +4,8 @@ div.katakuri-meta-box {
 div.katakuri-meta-box textarea {
 	margin-top: 3px;
 }
+
+div.katakuri-meta-box label {
+	padding-right: 8px; 
+	vertical-align: middle;
+}

@@ -11,7 +11,7 @@ class KatakuriFormRendererText {
 
     $size = isset($options['size']) ? $options['size'] : '40';
     $placeholder = isset($options['placeholder']) ? $options['placeholder'] : '';
-    $html .= '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '" placeholder="' . $placeholder . ' ' . $style_and_class . '">';
+    $html .= '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '" placeholder="' . $placeholder . '" ' . $style_and_class . '>';
 
     return $html;
   }

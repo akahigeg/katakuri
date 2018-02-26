@@ -7,6 +7,8 @@ class KatakuriFormRendererRadio {
   public static function build($field_name, $saved_value, $options) {
     $html = KatakuriFormRendererLabel::build($field_name, $options);
 
+    $style_and_class = KatakuriFormRendererHelperStyleAndClass::forInput($options);
+
     $checks = array();
     foreach ($options['values'] as $value) {
       if (is_array($value)) {
@@ -22,7 +24,7 @@ class KatakuriFormRendererRadio {
         $checked = '';
       }
       $html .= '<label style="padding-right: 5px;">';
-      $html .= '<input type="radio" name="' . $field_name . '" value="' . $option_value . '"' . $checked . '>';
+      $html .= '<input type="radio" name="' . $field_name . '" value="' . $option_value . '" ' . $style_and_class . $checked . '>';
       $html .= $option_label . '</label> ';
     }
 

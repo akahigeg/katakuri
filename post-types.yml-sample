@@ -87,7 +87,6 @@ some_post:
     - field1:
         label: FIELD1
         label_class: your-theme-admin-form-label
-        label_style: "background-color: gray;"
         class: your-theme-admin-form-text
         style: "background-color: gray;"
         unique: true

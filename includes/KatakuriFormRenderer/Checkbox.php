@@ -7,6 +7,8 @@ class KatakuriFormRendererCheckbox {
   public static function build($field_name, $saved_value, $options) {
     $html = KatakuriFormRendererLabel::build($field_name, $options);
 
+    $style_and_class = KatakuriFormRendererHelperStyleAndClass::forInput($options);
+
     $saved_values = maybe_unserialize($saved_value);
     foreach ($options['values'] as $value) {
       if (is_array($value)) {
@@ -22,7 +24,7 @@ class KatakuriFormRendererCheckbox {
         $checked = '';
       }
       $html .= '<label style="padding-right: 5px;">';
-      $html .= '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '"' . $checked . '>';
+      $html .= '<input type="checkbox" name="' . $field_name . '[]" value="' . $option_value . '" ' . $style_and_class . $checked . '>';
       $html .= $option_label . '</label> ';
     }
 

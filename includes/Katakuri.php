@@ -533,7 +533,7 @@ class Katakuri {
         foreach ($post_type_options['taxonomies'] as $taxonomy_config) {
           if (is_array($taxonomy_config)) {
             foreach ($taxonomy_config as $name => $options) {
-              if (array_key_exists('custom_fields', $options)) {
+              if (!empty($options) && array_key_exists('custom_fields', $options)) {
                 add_action($name . '_add_form_fields', 'Katakuri::addTaxonomyMetaBoxForAdd');
                 add_action($name . '_edit_form', 'Katakuri::addTaxonomyMetaBoxForEdit');
               }

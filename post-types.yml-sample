@@ -40,11 +40,11 @@ some_post:
     has_archive: true
     supports: title
   taxonomies:
-    - some_post_tag:
+    - common_tag:
         hierarchical: false
         public: true
         show_ui: true
-        label: SomePostTag
+        label: CommonTag
     - some_post_category:
         hierarchical: true
         public: true
@@ -220,3 +220,5 @@ another_post:
     public: true
     has_archive: true
     hierarchical: true
+  taxonomies:
+    - common_tag:

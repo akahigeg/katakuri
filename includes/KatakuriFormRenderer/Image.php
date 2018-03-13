@@ -18,6 +18,8 @@ class KatakuriFormRendererImage {
        <input type="button" class="button button-secondary ' . $field_name . '-media-remove" id="' . $field_name . '-media-remove" name="media-remove" value="Remove" />
     </p>';
 
+    $html .= KatakuriFormRendererDescription::build($field_name, $options);
+
     $html .= self::buildMediaJS($field_name, $saved_value, $options);
 
     return $html;

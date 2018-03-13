@@ -28,6 +28,8 @@ class KatakuriFormRendererCheckbox {
       $html .= $option_label . '</label> ';
     }
 
+    $html .= KatakuriFormRendererDescription::build($field_name, $options);
+
     return $html;
   }
 }

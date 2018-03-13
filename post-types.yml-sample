@@ -84,6 +84,7 @@ some_post:
           post_type: another_post
           orderby: date
           order: asc
+        description: select another posts.
     - field1:
         label: FIELD1
         label_class: your-theme-admin-form-label
@@ -101,6 +102,7 @@ some_post:
         values:
           - apple
           - orange
+        description: checkboxes.
     - cb2:
         label: CheckBox2
         input: checkbox
@@ -121,6 +123,7 @@ some_post:
           - cat
           - dog
           - monkey
+        description: radios.
     - radio2:
         label: Radio2
         input: radio
@@ -142,6 +145,7 @@ some_post:
         rows: 8
         cols: 60
         default: "DEFAULT5!"
+        description: a textarea.
     - field6:
         label: FIELD6
         input: select
@@ -174,6 +178,7 @@ some_post:
           - D: D TYPE
           - E: E TYPE
           - F: F TYPE
+        description: a multiple select.
     - image1:
         label: IMAGE1
         unique: true
@@ -181,6 +186,7 @@ some_post:
         size: 40
         before: "<hr>"
         after: "<hr>"
+        description: image.
     - image2:
         label: IMAGE2
         unique: true

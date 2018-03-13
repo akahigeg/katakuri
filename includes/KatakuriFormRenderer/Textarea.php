@@ -16,6 +16,8 @@ class KatakuriFormRendererTextarea {
     $cols = isset($options['cols']) ? $options['cols'] : '40';
     $html .= '<textarea name="' . $field_name . '" rows="' . $rows . '" cols="' . $cols . '" ' . $style_and_class . '>' . $saved_value . '</textarea>';
 
+    $html .= KatakuriFormRendererDescription::build($field_name, $options);
+
     return $html;
   }
 }

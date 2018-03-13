@@ -23,6 +23,8 @@ class KatakuriFormRendererSelect {
     $html .= self::buildOptions($saved_values, $options);
     $html .= '</select>';
 
+    $html .= KatakuriFormRendererDescription::build($field_name, $options);
+
     return $html;
   }
 

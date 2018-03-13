@@ -1,6 +1,7 @@
 div.katakuri-meta-box {
 	padding:5px 0;
 }
+
 div.katakuri-meta-box textarea {
 	margin-top: 3px;
 }
@@ -8,4 +9,21 @@ div.katakuri-meta-box textarea {
 div.katakuri-meta-box label {
 	padding-right: 8px; 
 	vertical-align: middle;
+}
+
+div.katakuri-meta-box label.for-multiple-select,
+div.katakuri-meta-box label.for-textarea {
+	padding-right: 8px; 
+	vertical-align: top;
+}
+
+div.katakuri-meta-box label.for-radio-value,
+div.katakuri-meta-box label.for-checkbox-value {
+	padding-right: 15px; 
+	vertical-align: top;
+}
+
+div.katakuri-meta-box input[type=radio],
+div.katakuri-meta-box input[type=checkbox] {
+	margin-right: 5px;
 }

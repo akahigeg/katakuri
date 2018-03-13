@@ -23,7 +23,7 @@ class KatakuriFormRendererRadio {
       } else {
         $checked = '';
       }
-      $html .= '<label style="padding-right: 5px;">';
+      $html .= '<label class="for-radio-value">';
       $html .= '<input type="radio" name="' . $field_name . '" value="' . $option_value . '" ' . $style_and_class . $checked . '>';
       $html .= $option_label . '</label> ';
     }

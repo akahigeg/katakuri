@@ -5,6 +5,9 @@ class KatakuriFormRendererTextarea {
   }
 
   public static function build($field_name, $saved_value, $options) {
+    if (!isset($options['label_style']) && !isset($options['label_class'])) {
+      $options['label_class'] = 'for-textarea';
+    }
     $html = KatakuriFormRendererLabel::build($field_name, $options);
 
     $style_and_class = KatakuriFormRendererHelperStyleAndClass::forInput($options);

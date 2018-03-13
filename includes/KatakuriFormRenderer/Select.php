@@ -5,14 +5,19 @@ class KatakuriFormRendererSelect {
   }
 
   public static function build($field_name, $saved_value, $options) {
+    $size = isset($options['size']) ? ' size="' . $options['size'] . '"' : '';
+    $multiple = isset($options['multiple']) && $options['multiple'] == true ? ' multiple' : '';
+    if (!empty($multiple)) {
+      if (!isset($options['label_style']) && !isset($options['label_class'])) {
+        $options['label_class'] = 'for-multiple-select';
+      }
+    }
+
     $html = KatakuriFormRendererLabel::build($field_name, $options);
 
     $saved_values = maybe_unserialize($saved_value);
 
     $style_and_class = KatakuriFormRendererHelperStyleAndClass::forInput($options);
-
-    $size = isset($options['size']) ? ' size="' . $options['size'] . '"' : '';
-    $multiple = isset($options['multiple']) && $options['multiple'] == true ? ' multiple' : '';
 
     $html .= '<select name="' . $field_name . '[]"' . $size . ' ' . $style_and_class . $multiple . '>';
     $html .= self::buildOptions($saved_values, $options);

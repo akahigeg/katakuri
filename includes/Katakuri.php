@@ -272,7 +272,11 @@ class Katakuri {
       $custom_fields = $post_types[$current_post_type]['custom_fields'];
       foreach ($custom_fields as $custom_field) {
         foreach ($custom_field as $name => $options) {
-          self::saveMetaByFieldType($post_id, $name, $options);
+          if (isset($options['save_function']) && function_exists($options['save_function'])) {
+            $options['save_function']($post_id, $name, $options);
+          } else {
+            self::saveMetaByFieldType($post_id, $name, $options);
+          }
         }
       }
     }
@@ -572,4 +576,13 @@ function katakuri_example_rendering_meta_box_func($post, $args) {
   echo '<div class="katakuri-inner-meta-box">';
   echo '<input name="field3" type="text" value="' . $field_3_saved_value . '"';
   echo '</div>';
+}
+
+function katakuri_example_save_func($post_id, $name, $options) {
+  if (isset($_POST[$name])) {
+    $value = $_POST[$name] . '+';
+  } else {
+    $value = '';
+  }
+  update_post_meta($post_id, $name, $value);
 }

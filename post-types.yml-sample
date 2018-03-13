@@ -101,6 +101,7 @@ some_post:
     - field3:
         label: FIELD3
         input: text
+        save_function: katakuri_example_save_func
     - cb1:
         label: CheckBox1
         unique: false

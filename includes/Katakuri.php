@@ -168,10 +168,16 @@ class Katakuri {
             $context = isset($meta_box_options['context']) ? $meta_box_options['context'] : '';
             $priority = isset($meta_box_options['priority']) ? $meta_box_options['priority'] : 'default';
 
+            if (isset($meta_box_options['rendering_function']) && function_exists($meta_box_options['rendering_function'])) {
+              $rendering_meta_box_function = $meta_box_options['rendering_function'];
+            } else {
+              $rendering_meta_box_function = 'Katakuri::renderMetaBox';
+            }
+
             $include_fields = $meta_box_options['fields'];
             add_meta_box($name . '_meta_box_options', 
                        $meta_box_options['label'], 
-                       'Katakuri::renderMetaBox', 
+                       $rendering_meta_box_function, 
                        $post_type_name, $context, $priority, $include_fields);
 
             # avoid double rendering
@@ -225,7 +231,7 @@ class Katakuri {
           $input_type = isset($options['input']) ? $options['input'] : "text";
           $saved_value = isset($custom_field_values[$name]) ? $custom_field_values[$name][0] : "";
 
-          echo '<div class="katakuri-meta-box">';
+          echo '<div class="katakuri-inner-meta-box">';
           if (isset($options['before'])) {
             echo $options['before'];
           }
@@ -551,8 +557,19 @@ class Katakuri {
 
 }
 
-/* example render function */
+/* example rendering function */
 function katakuri_example_rendering_func($name, $saved_value, $options) {
   echo '<div style="text-align: center; background-color: #070; color: white; padding: 10px 0;">Special rendering Field 2</div>';
   echo '<input name="' . $name . '" type="' . $options['input'] . '" value="' . $saved_value . '" style="width: 100%; margin: 5px 0 0 0;" placeholder="input field 2">';
+}
+
+function katakuri_example_rendering_meta_box_func($post, $args) {
+  $post_type_name = get_post_type($post);
+  $custom_field_values = get_post_custom();
+
+  $field_3_saved_value = isset($custom_field_values['field3']) ? $custom_field_values['field3'][0] : '';
+
+  echo '<div class="katakuri-inner-meta-box">';
+  echo '<input name="field3" type="text" value="' . $field_3_saved_value . '"';
+  echo '</div>';
 }

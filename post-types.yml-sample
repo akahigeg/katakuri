@@ -98,6 +98,9 @@ some_post:
         label: FIELD2
         input: text
         rendering_function: katakuri_example_rendering_func
+    - field3:
+        label: FIELD3
+        input: text
     - cb1:
         label: CheckBox1
         unique: false
@@ -217,6 +220,13 @@ some_post:
           - radio1
           - radio2
           - radio3
+    - box3:
+        label: ぼっくす3
+        context: normal
+        rendering_function: katakuri_example_rendering_meta_box_func
+        priority: high
+        fields:
+          - field3
 another_post:
   register_options:
     labels:

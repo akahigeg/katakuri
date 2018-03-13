@@ -13,6 +13,8 @@ class KatakuriFormRendererText {
     $placeholder = isset($options['placeholder']) ? $options['placeholder'] : '';
     $html .= '<input name="' . $field_name . '" type="text" value="' . $saved_value . '" size="' . $size . '" placeholder="' . $placeholder . '" ' . $style_and_class . '>';
 
+    $html .= KatakuriFormRendererDescription::build($field_name, $options);
+
     return $html;
   }
 }

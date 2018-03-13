@@ -21,4 +21,18 @@ class KatakuriFormRendererHelperStyleAndClass {
     }
     return implode(' ', $attrs);
   }
+
+  public static function forDescription($options) {
+    $attrs = array();
+    if (isset($options['description_class'])) {
+      $attrs[] = 'class="' . $options['description_class'] . '"';
+    }
+    if (isset($options['description_style'])) {
+      $attrs[] = 'style="' . $options['description_style'] . '"';
+    }
+    if (empty($attrs)) {
+      $attrs[] = 'class="katakuri-description"';
+    }
+    return implode(' ', $attrs);
+  }
 }

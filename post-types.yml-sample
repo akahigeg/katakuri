@@ -88,11 +88,12 @@ some_post:
         label: FIELD1
         label_class: your-theme-admin-form-label
         class: your-theme-admin-form-text
-        style: "background-color: gray;"
+        style: "background-color: blue;"
         unique: true
         input: text
         size: 20
         placeholder: input your field1
+        description: this is a note.
     - cb1:
         label: CheckBox1
         unique: false

@@ -27,3 +27,8 @@ div.katakuri-meta-box input[type=radio],
 div.katakuri-meta-box input[type=checkbox] {
 	margin-right: 5px;
 }
+
+p.katakuri-description {
+	color: #666;
+	margin-top: 3px;
+}

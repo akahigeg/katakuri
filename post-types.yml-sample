@@ -90,11 +90,14 @@ some_post:
         label_class: your-theme-admin-form-label
         class: your-theme-admin-form-text
         style: "background-color: blue;"
-        unique: true
         input: text
         size: 20
         placeholder: input your field1
         description: this is a note.
+    - field2:
+        label: FIELD2
+        input: text
+        rendering_function: katakuri_example_rendering_func
     - cb1:
         label: CheckBox1
         unique: false
@@ -206,6 +209,7 @@ some_post:
         context: side 
         fields:
           - field1
+          - field2
     - box2:
         label: ぼっくす2
         context: normal

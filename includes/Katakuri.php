@@ -230,8 +230,13 @@ class Katakuri {
             echo $options['before'];
           }
 
-          $class_name = 'KatakuriFormRenderer' . KatakuriUtil::pascalize($options['input']);
-          $class_name::render($name, $saved_value, $options);
+          if (isset($options['rendering_function']) && function_exists($options['rendering_function'])) {
+            // use custom render function for complex UI. maybe defined in themes
+            $options['rendering_function']($name, $saved_value, $options);
+          } else {
+            $class_name = 'KatakuriFormRenderer' . KatakuriUtil::pascalize($options['input']);
+            $class_name::render($name, $saved_value, $options);
+          }
 
           if (isset($options['after'])) {
             echo $options['after'];
@@ -544,4 +549,10 @@ class Katakuri {
     }
   }
 
+}
+
+/* example render function */
+function katakuri_example_rendering_func($name, $saved_value, $options) {
+  echo '<div style="text-align: center; background-color: #070; color: white; padding: 10px 0;">Special rendering Field 2</div>';
+  echo '<input name="' . $name . '" type="' . $options['input'] . '" value="' . $saved_value . '" style="width: 100%; margin: 5px 0 0 0;" placeholder="input field 2">';
 }

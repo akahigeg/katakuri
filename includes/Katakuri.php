@@ -491,6 +491,9 @@ class Katakuri {
    */
   public static function enqueueStyle() {
     wp_enqueue_style('katakuri-style' , plugins_url('../katakuri.css', __FILE__));
+    if (file_exists(get_stylesheet_directory() . '/katakuri.css')) {
+      wp_enqueue_style('katakuri-theme-style' , get_stylesheet_directory_uri() . '/katakuri.css');
+    }
   }
   public static function enqueueScript() {
     wp_enqueue_media();

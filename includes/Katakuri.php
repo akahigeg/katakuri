@@ -117,6 +117,9 @@ class Katakuri {
   }
 
   public static function manageCustomColumns($column_name, $post_id) {
+    $post_types = self::readConfig();
+    $current_post_type = get_query_var('post_type');
+
     // avoid double output on 'manage_posts_custom_column' and 'manage_%post_type%_posts_custom_column'
     global $previous_managed; 
     if (isset($previous_managed) && $previous_managed == array($column_name, $post_id)) {
@@ -129,10 +132,41 @@ class Katakuri {
     } else {
       $saved_value = get_post_meta($post_id, $column_name, true);
     }
-    if (is_array($saved_value)) {
-      echo implode($saved_value, ',');
-    } else {
-      echo $saved_value;
+
+    foreach ($post_types[$current_post_type]['columns_on_manage_screen']['show'] as $field) {
+      if (is_array($field)) {
+        if (array_keys($field)[0] != $column_name) {
+          continue;
+        }
+        $display_value = self::getDisplayValueOnMangeColumn($field, $saved_value);
+      } else {
+        $display_value = $saved_value;
+      }
+    }
+
+    if (isset($display_value)) {
+      if (is_array($display_value)) {
+        echo implode($display_value, ',');
+      } else {
+        echo $display_value;
+      }
+    }
+  }
+
+  private static function getDisplayValueOnMangeColumn($field, $saved_value) {
+    foreach ($field as $name => $options) {
+      if (isset($options['display_values'])) {
+        $display_values = $options['display_values'];
+        if (isset($display_values[$saved_value])) {
+          return $display_values[$saved_value];
+        } elseif (isset($display_values['default'])) {
+          return $display_values['default'];
+        } else {
+          return $saved_value;
+        }
+      } else {
+        return $saved_value;
+      }
     }
   }
 
